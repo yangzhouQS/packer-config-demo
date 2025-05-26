@@ -1,0 +1,59 @@
+{
+  "name": "@cs/webpages-packer",
+  "version": "4.0.0-beta.1",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "dev": "rslib build --watch",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "pnpm:install": "pnpm i",
+    "publish:beta": "npm publish --tag=beta",
+    "publish:latest": "npm publish",
+    "pnpm:unpublish": "npm unpublish @cs/webpages-packer@4.0.0-beta.2",
+    "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.0-beta.1 --force",
+    "prebundle": "prebundle"
+  },
+  "dependencies": {
+    "cac": "^6.7.14",
+    "tree-kill": "1.2.2",
+    "deepmerge": "^4.3.1",
+    "param-case": "3.0.4",
+    "jiti": "^2.4.2",
+    "webpack-merge": "^6.0.1",
+    "@rspack/cli": "1.3.9",
+    "@rspack/core": "1.3.10",
+    "@rsbuild/core": "1.3.18",
+    "tinyglobby": "^0.2.13",
+    "lodash": "4.17.21",
+    "rslog": "^1.2.3",
+    "picocolors": "^1.1.1",
+    "chokidar": "^4.0.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.17",
+    "fs-extra": "^11.3.0",
+    "cross-env": "^7.0.3",
+    "prebundle": "1.3.3",
+    "@eslint/js": "^9.25.1",
+    "@rslib/core": "^0.8.0",
+    "@types/node": "^22.8.1",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1",
+    "vitest": "^3.1.4"
+  }
+}
