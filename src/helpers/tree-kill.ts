@@ -73,9 +73,22 @@ function getAllChilds(pid: number) {
 function killPid(pid: number, signal?: string | number) {
   try {
     process.kill(pid, signal);
-  } catch (err) {
-    if (err.code !== 'ESRCH') {
-      throw err;
+  } catch (error) {
+    // 使用更通用的类型检查
+    if (error instanceof Error && 'code' in error) {
+      const errWithCode = error as { code: string; message: string };
+      switch (errWithCode.code) {
+        case 'ESRCH':
+          console.error(`错误：进程 ${pid} 不存在`);
+          break;
+        case 'EPERM':
+          console.error(`错误：没有权限向进程 ${pid} 发送信号`);
+          break;
+        default:
+          console.error(`未知错误：${errWithCode.message}`);
+      }
+    } else {
+      console.error(`非预期错误：${error}`);
     }
   }
 }

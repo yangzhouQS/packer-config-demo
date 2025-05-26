@@ -1,8 +1,6 @@
 import {RsbuildConfig} from "@rsbuild/core";
 import {RspackOptions} from "@rspack/core";
-import {ConfigChainMergeContext} from "@rsbuild/core/dist-types/types";
-// import {type ConfigChainMergeContext} from "@rsbuild/core";
-
+import {ConfigChainMergeContext} from "./utils.ts";
 export type ChainedHtmlOption<O> = ConfigChainMergeContext<O, { entryName: string }>;
 
 export type VuePackerConfigType = {

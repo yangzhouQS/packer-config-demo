@@ -131,7 +131,7 @@ export const DEFAULT_RSBUILD_CONFIG = {
     watchFiles: {
       paths: ['src/web-content/**/*']
     },
-    writeToDisk: (file) => !file.includes('.hot-update.'),
+    writeToDisk: (file: string) => !file.includes('.hot-update.'),
     progressBar: true,
     lazyCompilation: {
       entries: true,
