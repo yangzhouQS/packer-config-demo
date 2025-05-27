@@ -34,6 +34,7 @@ export type PackerServerConfigType = {
   staticPath?: string,
   prefix?: string,
   proxy?: Record<string, any>,
+  hmr?: boolean,
 };
 
 export type PackerConfigType = {

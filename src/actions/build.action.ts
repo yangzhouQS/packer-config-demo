@@ -16,6 +16,7 @@ import {packerWebCommonPlugin} from "../plugins/webCommon.ts";
 import {packerPluginSource} from "../plugins/source.ts";
 import {packerPluginResolve} from "../plugins/resolve.ts";
 import {packerPluginServer} from "../plugins/server.ts";
+import {packerPluginDev} from "../plugins/dev.ts";
 
 
 export interface RunActionBuildArgOptions {
@@ -90,6 +91,7 @@ export class BuildAction extends AbstractAction {
       packerPluginSource(context),
       packerPluginResolve(context),
       packerPluginServer(context),
+      packerPluginDev(context),
     )
     // console.log(rsConfig);
   }
