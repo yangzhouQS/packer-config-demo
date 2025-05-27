@@ -6,6 +6,10 @@ import {RsbuildCompiler} from "../compiler/rsbuild.compiler";
 import deepmerge from "deepmerge";
 import {defaultPackerConfig} from "../helpers/default-packer-config";
 import {generatePackBuildConfig} from "../helpers/config.helper.ts";
+import {pluginHtml} from "../plugins/html.ts";
+import {PackerConfigType} from "../types/config.ts";
+import {PACKER_NAME} from "../constants.ts";
+import {logger} from "../logger.ts";
 
 export interface RunActionBuildArgOptions {
   commandOptions: Input[]
@@ -22,7 +26,6 @@ export class BuildAction extends AbstractAction {
   );
 
   public async handle(commandOptions: Input[]): Promise<void> {
-
     try {
       const watchModeOption = commandOptions.find(
         (option) => option.name === 'watch',
@@ -42,16 +45,56 @@ export class BuildAction extends AbstractAction {
     let configuration = await this.loader.load(configFileName);
     configuration = deepmerge(defaultPackerConfig, configuration);
 
-    const resultConfig = await generatePackBuildConfig({packConfig: configuration, commandOptions, isWatchEnabled})
-    console.log(resultConfig);
+    // const resultConfig = await generatePackBuildConfig({packConfig: configuration, commandOptions, isWatchEnabled})
+    // console.log(resultConfig);
+
+    await this.createRsbuildConfig(configuration);
 
 
     // 解析出站点和服务打包的配置
-    console.log('--------runBuild-------------configuration');
-    console.log(configuration);
+    // console.log('--------runBuild-------------configuration');
+    // console.log(configuration);
 
-    // const rsbuildCompiler = new RsbuildCompiler();
+    const rsbuildCompiler = new RsbuildCompiler();
+    rsbuildCompiler.run({
+      configuration,
+      extras:{
+        inputs: commandOptions,
+        watchMode: isWatchEnabled,
+        debug: isDebugEnabled
+      },
+      tsConfigPath: 'tsconfig.json',
+      onSuccess,
+    })
+  }
 
-    // rsbuildCompiler.run(configuration)
+  /**
+   * 不支持vue2和vue3同时打包构建
+   * @param {PackerConfigType} configuration
+   * @returns {Promise<void>}
+   */
+  async createRsbuildConfig(configuration:PackerConfigType){
+    this.checkBuildVueVersion(configuration);
+    const ret = pluginHtml(configuration)
+    console.log(ret);
+  }
+
+  checkBuildVueVersion(configuration:PackerConfigType){
+    const entries = configuration.entries;
+    let isVue2  = false;
+    let isVue3 = false;
+    for (const entryName in entries) {
+      const entry = entries[entryName];
+      if (entry.type === 'browserVue3') {
+        isVue3 = true;
+      }
+      if (entry.type === 'browserVue2') {
+        isVue2 = true;
+      }
+    }
+    if (isVue2 && isVue3) {
+      logger.error(`[${PACKER_NAME}] 不支持同时打包Vue2和Vue3模块`);
+      process.exit(1);
+    }
   }
 }

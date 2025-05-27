@@ -11,7 +11,7 @@ type RsbuildCompilerExtras = {
 
 export interface RunRsbuildCompilerArgOptions<T = RsbuildCompilerExtras> {
   configuration: PackerConfigType,
-  tsConfigPath: string,
+  tsConfigPath?: string,
   extras: T,
   onSuccess?: () => void;
 }

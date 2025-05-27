@@ -38,5 +38,4 @@ export class RsbuildCompiler extends BaseCompiler {
 
     // const afterCallback = createAfterCallback(onSuccess);
   }
-
 }
