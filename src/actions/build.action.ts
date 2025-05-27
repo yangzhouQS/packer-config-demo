@@ -93,7 +93,7 @@ export class BuildAction extends AbstractAction {
       packerPluginServer(context),
       packerPluginDev(context),
     )
-    // console.log(rsConfig);
+    console.log(rsConfig);
   }
 
   checkBuildVueVersion(configuration: PackerConfigType) {

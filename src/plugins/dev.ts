@@ -18,6 +18,10 @@ export function packerPluginDev(context: InternalContext,): RsbuildConfig {
       hmr,
       progressBar,
       writeToDisk: (file) => !file.includes('.hot-update.'),
+      lazyCompilation:{
+        entries: true,
+        imports: true,
+      }
     }
   }
 }
