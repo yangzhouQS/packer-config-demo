@@ -47,7 +47,8 @@
     "lodash": "4.17.21",
     "rslog": "^1.2.3",
     "picocolors": "^1.1.1",
-    "chokidar": "^4.0.3"
+    "chokidar": "^4.0.3",
+    "@swc/core": "1.11.29"
   },
   "devDependencies": {
     "@cs/webpages-packer-browser-vue3": "^3.0.0-beta.2",

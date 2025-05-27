@@ -3,9 +3,11 @@ import {RsbuildConfig} from "@rsbuild/core";
 import {formatEntry} from "../helpers/config.helper.ts";
 
 
-export async function packerCommonPlugin(context: InternalContext): Promise<RsbuildConfig> {
+export async function packerWebCommonPlugin(context: InternalContext): Promise<RsbuildConfig> {
   const {isVue3,isVue2} = formatEntry(context);
-  let rsbuildConfig = {};
+  let rsbuildConfig = {
+
+  };
   if(isVue3){
     // const {rsbuildVue3Config}  = await import("@cs/webpages-packer-browser-vue3");
     // rsbuildConfig = rsbuildVue3Config.rsbuildConfig

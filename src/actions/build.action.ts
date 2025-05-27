@@ -12,9 +12,10 @@ import {logger} from "../logger.ts";
 import {createContext} from "../createContext.ts";
 import {mergeRsbuildConfig} from "@rsbuild/core";
 import {packerPluginOutput} from "../plugins/output.ts";
-import {packerCommonPlugin} from "../plugins/common.ts";
+import {packerWebCommonPlugin} from "../plugins/webCommon.ts";
 import {packerPluginSource} from "../plugins/source.ts";
 import {packerPluginResolve} from "../plugins/resolve.ts";
+import {packerPluginServer} from "../plugins/server.ts";
 
 
 export interface RunActionBuildArgOptions {
@@ -83,11 +84,12 @@ export class BuildAction extends AbstractAction {
     const context = await createContext(configuration,options);
     this.checkBuildVueVersion(configuration);
     const rsConfig = mergeRsbuildConfig(
-      await packerCommonPlugin(context),
+      await packerWebCommonPlugin(context),
       packerPluginHtml(context),
       packerPluginOutput(context),
       packerPluginSource(context),
       packerPluginResolve(context),
+      packerPluginServer(context),
     )
     // console.log(rsConfig);
   }
