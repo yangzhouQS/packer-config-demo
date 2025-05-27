@@ -16,8 +16,9 @@ export type BrowserVue3ConfigType = {
 
 export type PackerEntryItemType = {
   [key: string]: any,
+  entryKey: string,
   type: 'browserVue3' | 'browserVue2' | 'libraryVue3' | 'libraryVue2' | 'node',
-  title?: string,
+  title: string,
   input: string,
   output?: {
     fileName?: string,

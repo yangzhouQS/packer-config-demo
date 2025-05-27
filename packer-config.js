@@ -97,12 +97,12 @@ module.exports = {
     flowForm: {
       type: 'browserVue3',
       title: '流程表单',
-      input: 'src/web-content/module/flow-form/index.ts'
+      input: 'examples/src/web-content/module/flow-form/index.ts'
     },
     flowDesign: {
       type: 'browserVue3',
       title: '审批流程',
-      input: 'src/web-content/module/flow-design/index.ts'
+      input: 'examples/src/web-content/module/flow-design/index.ts'
     }
   }
 };

@@ -32,6 +32,7 @@ export class StartCommand extends AbstractCommand {
         const options: Input[] = [];
         console.log('----------------------StartCommand----------------------');
 
+        options.push({name: 'action', value: 'dev'});
         options.push({name: 'config', value: command.config,});
         options.push({name: 'watch', value: !!command.watch});
         options.push({name: 'include', value: command.include});

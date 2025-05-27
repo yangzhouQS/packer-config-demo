@@ -14,11 +14,8 @@ import {paramCase} from 'param-case';
  * @returns {RsbuildConfig}
  * @param context
  */
-export const PackerPluginHtml = (context: InternalContext, ): RsbuildConfig => {
-  logger.info("开始生成html入口");
-  console.log(context);
-  const {config} = context;
-  const entries = config.entries || {};
+export const packerPluginHtml = (context: InternalContext, ): RsbuildConfig => {
+  logger.debug("开始生成html入口配置");
   const entryConfig = formatEntry(context);
 
   /*构建模块标题*/
@@ -27,7 +24,6 @@ export const PackerPluginHtml = (context: InternalContext, ): RsbuildConfig => {
   const templateMap: Record<string, string> = {};
 
   forEach(entryConfig.webEntries, (entry) => {
-    console.log(`inputHtml----${entry.title}`);
     const entryKey = paramCase(entry.entryKey);
     titleMap[entryKey] = entry.title;
 

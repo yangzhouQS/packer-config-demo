@@ -6,10 +6,15 @@ import {RsbuildCompiler} from "../compiler/rsbuild.compiler";
 import deepmerge from "deepmerge";
 import {defaultPackerConfig} from "../helpers/default-packer-config";
 import {generatePackBuildConfig} from "../helpers/config.helper.ts";
-import {pluginHtml} from "../plugins/html.ts";
+import {packerPluginHtml} from "../plugins/html.ts";
 import {PackerConfigType} from "../types/config.ts";
 import {PACKER_NAME} from "../constants.ts";
 import {logger} from "../logger.ts";
+import {createContext} from "../createContext.ts";
+import {mergeRsbuildConfig} from "@rsbuild/core";
+import {packerPluginOutput} from "../plugins/output.ts";
+import {packerCommonPlugin} from "../plugins/common.ts";
+
 
 export interface RunActionBuildArgOptions {
   commandOptions: Input[]
@@ -48,7 +53,7 @@ export class BuildAction extends AbstractAction {
     // const resultConfig = await generatePackBuildConfig({packConfig: configuration, commandOptions, isWatchEnabled})
     // console.log(resultConfig);
 
-    await this.createRsbuildConfig(configuration);
+    await this.createRsbuildConfig(configuration, commandOptions);
 
 
     // 解析出站点和服务打包的配置
@@ -58,7 +63,7 @@ export class BuildAction extends AbstractAction {
     const rsbuildCompiler = new RsbuildCompiler();
     rsbuildCompiler.run({
       configuration,
-      extras:{
+      extras: {
         inputs: commandOptions,
         watchMode: isWatchEnabled,
         debug: isDebugEnabled
@@ -73,15 +78,20 @@ export class BuildAction extends AbstractAction {
    * @param {PackerConfigType} configuration
    * @returns {Promise<void>}
    */
-  async createRsbuildConfig(configuration:PackerConfigType){
+  async createRsbuildConfig(configuration: PackerConfigType,options: Input[]) {
+    const context = await createContext(configuration,options);
     this.checkBuildVueVersion(configuration);
-    const ret = pluginHtml(configuration)
-    console.log(ret);
+    const rsConfig = mergeRsbuildConfig(
+      await packerCommonPlugin(context),
+      packerPluginHtml(context),
+      packerPluginOutput(context),
+    )
+    console.log(rsConfig);
   }
 
-  checkBuildVueVersion(configuration:PackerConfigType){
+  checkBuildVueVersion(configuration: PackerConfigType) {
     const entries = configuration.entries;
-    let isVue2  = false;
+    let isVue2 = false;
     let isVue3 = false;
     for (const entryName in entries) {
       const entry = entries[entryName];

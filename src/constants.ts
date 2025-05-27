@@ -192,6 +192,14 @@ export const PACKER_CONFIG_FILES = [
   'packer-config.cts',
 ];
 
+export const HTML_CONFIG_FILES = [
+  'index.html',
+  'main.html',
+  'template.html',
+  'module.html',
+  'app.html',
+];
+
 /**
  * 打包器名称
  * @type {string}

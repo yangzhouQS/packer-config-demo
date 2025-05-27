@@ -1,4 +1,4 @@
-import {GeneratePackResultType, PackerConfigType, PackerEntryItemType} from "../types/config.ts";
+import {GeneratePackResultType, PackerConfigType, PackerEntriesType, PackerEntryItemType} from "../types/config.ts";
 import $lodash from "../../compiled/lodash";
 import {logger, mergeRsbuildConfig} from "@rsbuild/core";
 import {getEnvDir} from "./process-hook.ts";
@@ -7,18 +7,18 @@ import {paramCase} from "param-case";
 import {merge as webpackMerge} from "webpack-merge";
 import {Input} from "../commands/command.input.ts";
 import deepmerge from "deepmerge";
-import {PACKER_NAME} from "../constants.ts";
 import {
   DEFAULT_PACK_CONFIG,
   DEFAULT_RSBUILD_CONFIG,
   DEFAULT_RSPACK_CONFIG, defaultWebOutputConfig,
   defaultWebServeConfig
 } from "./default.config.ts";
+import {InternalContext} from "../types/context.ts";
 
 
 export function generatePackBuildConfig(
   {packConfig, commandOptions, isWatchEnabled}:
-  { packConfig: PackerConfigType; commandOptions: Input[], isWatchEnabled: boolean }
+    { packConfig: PackerConfigType; commandOptions: Input[], isWatchEnabled: boolean }
 ) {
   /*const serverConfig = {
     entry: {
@@ -210,4 +210,61 @@ export function generatePackBuildConfig(
   }
 
   return configResult;
+}
+
+
+export function formatEntry(context: InternalContext) {
+  const {rootPath, config} = context;
+  const entries = $lodash.get(config, 'entries', {});
+  let isVue3 = false;
+  let isVue2 = false;
+  const configResult: GeneratePackResultType = {
+    rootPath: '',
+    webConfig: {},
+    serverConfig: {},
+    isWebBuild: false,
+    isServerBuild: true,
+    _privateMeta: {},
+  };
+
+  const webEntries: PackerEntryItemType[] = [];
+  const nodeEntries: PackerEntryItemType[] = [];
+  $lodash.forEach(entries, (entry: PackerEntryItemType, key: string) => {
+    const entryConfig = {
+      input: entry.input,
+      title: entry.title || key,
+      type: entry.type,
+      entryKey: key,
+    };
+
+    if (!['browserVue3', 'browserVue2', 'node'].includes(entry.type)) {
+      logger.error(`[${PACKER_NAME}] 打包类型${entry.type}暂不支持, 请检查 entries.${key}模块打包配置`);
+      process.exit(1);
+    }
+
+    if (entry.type === 'node') {
+      nodeEntries.push(entryConfig);
+      configResult.isServerBuild = true;
+    }
+
+    if (['browserVue3', 'browserVue2'].includes(entry.type)) {
+      webEntries.push(entryConfig);
+      configResult.isWebBuild = true;
+    }
+
+    // 判断vue版本，后续使用
+    if (entry.type === 'browserVue3') {
+      isVue3 = true;
+    }
+    if (entry.type === 'browserVue2') {
+      isVue2 = true;
+    }
+  });
+
+  return {
+    webEntries,
+    nodeEntries,
+    isVue3,
+    isVue2,
+  }
 }

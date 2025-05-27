@@ -4,7 +4,7 @@ import path from "node:path";
 import {formatEntry} from "../helpers/config.helper.ts";
 import $lodash from "../../compiled/lodash";
 
-export function PackerPluginOutput(context: InternalContext,): RsbuildConfig {
+export function packerPluginOutput(context: InternalContext,): RsbuildConfig {
   const _copy: { from: string; to: string; }[] = [];
   const {config,rootPath} = context;
   const copy = config.global?.copy || {};

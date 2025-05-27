@@ -5,8 +5,8 @@ export type CommandTypeOptions = {
    */
   config?: string;
   /**
-  * 监听模式
-  * */
+   * 监听模式
+   * */
   watch?: boolean;
   /**
    * 环境变量，默认为 development
@@ -39,3 +39,5 @@ export type CommandTypeOptions = {
   typeCheck?: boolean;
 };
 
+
+export type CommandType = 'dev' | 'build' | 'preview';
