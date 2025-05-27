@@ -1,4 +1,4 @@
-import color from '../../compiled/picocolors/index.js';
+import color from 'picocolors';
 import {
   type MultiStats,
   type Stats,

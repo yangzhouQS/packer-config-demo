@@ -12,7 +12,7 @@
  * This convention helps distinguish between normal operations
  * and important alerts that require attention.
  */
-import { type Logger, logger } from '../compiled/rslog/index.js';
+import { type Logger, logger } from 'rslog';
 import { color } from './helpers';
 
 export const isDebug = (): boolean => {
