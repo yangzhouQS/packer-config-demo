@@ -47,7 +47,10 @@ module.exports = {
       rootOutPath: 'dist/',
       packerConfig: {
         resolve: {
-          extensions: ['.js', '.ts', '.json', '.tsx', '.vue']
+          alias:{
+            '@cs': 'src/web-content/components'
+          },
+          extensions: ['.js', '.ts', '.json', '.tsx', '.vue', '.jsx']
         },
         externals: {
           vue: 'Vue',

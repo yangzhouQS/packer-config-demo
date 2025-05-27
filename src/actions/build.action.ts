@@ -14,6 +14,7 @@ import {mergeRsbuildConfig} from "@rsbuild/core";
 import {packerPluginOutput} from "../plugins/output.ts";
 import {packerCommonPlugin} from "../plugins/common.ts";
 import {packerPluginSource} from "../plugins/source.ts";
+import {packerPluginResolve} from "../plugins/resolve.ts";
 
 
 export interface RunActionBuildArgOptions {
@@ -86,6 +87,7 @@ export class BuildAction extends AbstractAction {
       packerPluginHtml(context),
       packerPluginOutput(context),
       packerPluginSource(context),
+      packerPluginResolve(context),
     )
     // console.log(rsConfig);
   }
