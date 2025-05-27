@@ -29,7 +29,8 @@
     "pnpm:unpublish": "npm unpublish @cs/webpages-packer@4.0.0-beta.2",
     "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.0-beta.1 --force",
     "build:dev": "cross-env NODE_ENV=development node ./dist/index.cjs build",
-    "prebundle": "prebundle"
+    "prebundle": "prebundle",
+    "copy:dist": "node ./scripts/copy-dist.cjs H:\\2026code\\demo\\doc-rspack\\packer-build-test\\files\\@cs\\webpages-packer"
   },
   "dependencies": {
     "cac": "^6.7.14",
