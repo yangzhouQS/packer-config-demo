@@ -2,7 +2,7 @@ import {RsbuildConfig} from "@rsbuild/core";
 import {InternalContext} from "../types/context.ts";
 import path from "node:path";
 import {formatEntry} from "../helpers/config.helper.ts";
-import $lodash from "../../compiled/lodash";
+import $lodash from "lodash";
 
 export function packerPluginOutput(context: InternalContext,): RsbuildConfig {
   const _copy: { from: string; to: string; }[] = [];
@@ -27,6 +27,8 @@ export function packerPluginOutput(context: InternalContext,): RsbuildConfig {
 
   return {
     output: {
+      target: "web",
+      cleanDistPath: false,
       copy: _copy,
       externals
     }

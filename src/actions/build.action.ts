@@ -5,7 +5,6 @@ import {ConfigurationLoader} from "../configuration/configuration.loader";
 import {RsbuildCompiler} from "../compiler/rsbuild.compiler";
 import deepmerge from "deepmerge";
 import {defaultPackerConfig} from "../helpers/default-packer-config";
-import {generatePackBuildConfig} from "../helpers/config.helper.ts";
 import {packerPluginHtml} from "../plugins/html.ts";
 import {PackerConfigType} from "../types/config.ts";
 import {PACKER_NAME} from "../constants.ts";
@@ -14,6 +13,7 @@ import {createContext} from "../createContext.ts";
 import {mergeRsbuildConfig} from "@rsbuild/core";
 import {packerPluginOutput} from "../plugins/output.ts";
 import {packerCommonPlugin} from "../plugins/common.ts";
+import {packerPluginSource} from "../plugins/source.ts";
 
 
 export interface RunActionBuildArgOptions {
@@ -85,8 +85,9 @@ export class BuildAction extends AbstractAction {
       await packerCommonPlugin(context),
       packerPluginHtml(context),
       packerPluginOutput(context),
+      packerPluginSource(context),
     )
-    console.log(rsConfig);
+    // console.log(rsConfig);
   }
 
   checkBuildVueVersion(configuration: PackerConfigType) {

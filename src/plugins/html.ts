@@ -2,10 +2,9 @@ import {RsbuildConfig} from "@rsbuild/core";
 import {logger} from "../logger.ts";
 import {InternalContext} from "../types/context.ts";
 import {formatEntry} from "../helpers/config.helper.ts";
-import {forEach} from "lodash";
+import {forEach, uniq} from "lodash";
 import path from "node:path";
 import {HTML_CONFIG_FILES} from "../constants.ts";
-import $lodash from "../../compiled/lodash";
 import fse from 'fs-extra';
 import {paramCase} from 'param-case';
 
@@ -33,7 +32,7 @@ export const packerPluginHtml = (context: InternalContext, ): RsbuildConfig => {
     const defaultHtmlPath = path.join(dir, name + '.html');
     let htmlPath = HTML_CONFIG_FILES.map(h => path.join(dir, h));
     htmlPath.unshift(defaultHtmlPath);
-    htmlPath = $lodash.uniq(htmlPath);
+    htmlPath = uniq(htmlPath);
     let inputHtml = '';
 
     // 遍历html文件，找到第一个存在的文件

@@ -1,4 +1,3 @@
-// @ts-check
 import { join } from 'node:path';
 import fs from 'fs-extra';
 
@@ -21,12 +20,12 @@ export default {
   dependencies:[
     'tinyglobby',
     // 'lodash',
-    {
+    /*{
       name: 'lodash',
       ignoreDts: true,
       // strip sourcemap comment
       prettier: true,
-    },
+    },*/
     {
       name: 'chokidar',
       // strip sourcemap comment

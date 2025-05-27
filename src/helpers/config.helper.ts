@@ -1,5 +1,5 @@
 import {GeneratePackResultType, PackerConfigType, PackerEntriesType, PackerEntryItemType} from "../types/config.ts";
-import $lodash from "../../compiled/lodash";
+import $lodash, {find} from "lodash";
 import {logger, mergeRsbuildConfig} from "@rsbuild/core";
 import {getEnvDir} from "./process-hook.ts";
 import path from "node:path";
@@ -16,11 +16,11 @@ import {
 import {InternalContext} from "../types/context.ts";
 
 
-export function generatePackBuildConfig(
+/*export function generatePackBuildConfig(
   {packConfig, commandOptions, isWatchEnabled}:
     { packConfig: PackerConfigType; commandOptions: Input[], isWatchEnabled: boolean }
 ) {
-  /*const serverConfig = {
+  /!*const serverConfig = {
     entry: {
       main: './src/controllers/main.ts',
     },
@@ -28,7 +28,7 @@ export function generatePackBuildConfig(
       path: '',
       filename: '[name].js',
     },
-  };*/
+  };*!/
 
   const env = commandOptions.find((opt) => opt.name === 'env')?.value;
   const include = commandOptions.find((opt) => opt.name === 'include')?.value;
@@ -51,11 +51,11 @@ export function generatePackBuildConfig(
   const webEntries: PackerEntryItemType[] = [];
   const nodeEntries: PackerEntryItemType[] = [];
 
-  /*构建模块入口*/
+  /!*构建模块入口*!/
   const sourceEntries: Record<string, string> = {};
-  /*构建模块标题*/
+  /!*构建模块标题*!/
   const titleMap: Record<string, string> = {};
-  /*每个构建模块模板*/
+  /!*每个构建模块模板*!/
   const templateMap: Record<string, string> = {};
 
   $lodash.forEach(entries, (entry: PackerEntryItemType, key: string) => {
@@ -87,7 +87,7 @@ export function generatePackBuildConfig(
     includes = includes.concat(Object.keys(entries));
   }
 
-  /*1.模块打包入口和输入目录配置*/
+  /!*1.模块打包入口和输入目录配置*!/
   for (const entry of webEntries) {
     const entryName = entry._entryKey;
     if (!includes.includes(entryName) && !isProduction) {
@@ -107,7 +107,7 @@ export function generatePackBuildConfig(
     }
   }
 
-  /*2.本地代理服务器配置*/
+  /!*2.本地代理服务器配置*!/
   const serverConfigProxy = deepmerge(defaultWebServeConfig, {
     base: $lodash.get(server, 'prefix', ''),
     host: $lodash.get(server, 'host', undefined),
@@ -121,7 +121,7 @@ export function generatePackBuildConfig(
   }
 
 
-  /*3.拷贝文件*/
+  /!*3.拷贝文件*!/
   const _copy: { from: string; to: string; }[] = []; //typeof packerConfig.global.copy === 'object'? outputConfig.copy : [];
   const copy = global?.copy || {};
   Object.keys(copy).forEach((key) => {
@@ -131,7 +131,7 @@ export function generatePackBuildConfig(
     });
   });
 
-  /*4.output 配置*/
+  /!*4.output 配置*!/
   const outputConfig = deepmerge(
     defaultWebOutputConfig,
     {
@@ -140,7 +140,7 @@ export function generatePackBuildConfig(
     },
   );
 
-  /*resolveConfig*/
+  /!*resolveConfig*!/
   const resolveConfig = {
     alias: $lodash.get(global, 'browserVue3.packerConfig.resolve.alias', {}),
     extensions: $lodash.get(global, 'browserVue3.packerConfig.resolve.extensions', {}),
@@ -173,7 +173,7 @@ export function generatePackBuildConfig(
     const entry = nodeEntries[0];
     const nodeEntry: Record<string, any> = {};
 
-    /*服务启用了打包*/
+    /!*服务启用了打包*!/
     if (includes.includes(entry._entryKey)) {
       let entryOutputFileName = $lodash.get(entry, 'output.fileName', paramCase(entry._entryKey));
       let entryOutputPath = '';
@@ -210,6 +210,19 @@ export function generatePackBuildConfig(
   }
 
   return configResult;
+}*/
+
+/**
+ * 获取命令行参数中 --include 参数值，并以逗号分隔的字符串形式返回。
+ * @param {InternalContext} context
+ * @returns {any}
+ */
+export function formatCommandInclude(context: InternalContext): string[] {
+  const includeOption = find(context.commandOptions, (item) => item.name === 'include')
+  if (includeOption && includeOption.value) {
+    return includeOption?.value.split(',')
+  }
+  return []
 }
 
 
