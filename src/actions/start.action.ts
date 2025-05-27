@@ -22,7 +22,7 @@ export class StartAction extends BuildAction {
       // 是否启用 watch
       const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
       // 是否启用 debug 模式，即是否启用 参数 --inspect
-      const debugFlag = debugModeOption && debugModeOption.value;
+      const isDebugEnabled = !!(debugModeOption && debugModeOption.value);
 
 
       // console.log('configFileName = ', configFileName);
@@ -36,7 +36,7 @@ export class StartAction extends BuildAction {
         {
           commandOptions,
           isWatchEnabled,
-          isDebugEnabled: !!debugFlag,
+          isDebugEnabled,
           onSuccess,
         }
       );

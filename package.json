@@ -9,6 +9,10 @@
       "require": "./dist/index.cjs"
     }
   },
+  "bin": {
+    "packer": "./bin/webpages-packer.js",
+    "webpages-packer": "./bin/webpages-packer.js"
+  },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "files": [
@@ -24,6 +28,7 @@
     "publish:latest": "npm publish",
     "pnpm:unpublish": "npm unpublish @cs/webpages-packer@4.0.0-beta.2",
     "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.0-beta.1 --force",
+    "build:dev": "cross-env NODE_ENV=development node ./dist/index.cjs build",
     "prebundle": "prebundle"
   },
   "dependencies": {
@@ -43,6 +48,7 @@
     "chokidar": "^4.0.3"
   },
   "devDependencies": {
+    "@cs/webpages-packer-browser-vue3": "^3.0.0-beta.1",
     "@types/lodash": "^4.17.17",
     "@types/deepmerge": "^2.2.3",
     "fs-extra": "^11.3.0",

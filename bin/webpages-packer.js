@@ -22,7 +22,7 @@ import {PackerCli} from '../dist/index.js';
 async function main() {
   console.log(PackerCli);
   const cli = new PackerCli();
-  // await cli.run(process.argv);
+  await cli.run();
 }
 
 main();
