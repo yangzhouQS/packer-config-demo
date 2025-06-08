@@ -22,7 +22,6 @@ export class StartCommand extends AbstractCommand {
     ).option("--type-check", "Enable type checking (when SWC is used).", { default: false }).option("-e, --exec [binary]", "Binary to run (default: \"node\").").action(async (command: CommandTypeOptions) => {
       setNodeEnv(command.env);
       const options: Input[] = [];
-      console.log("----------------------StartCommand----------------------");
 
       options.push({ name: "action", value: "dev" });
       options.push({ name: "config", value: command.config });

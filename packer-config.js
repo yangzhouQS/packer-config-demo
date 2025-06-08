@@ -97,7 +97,7 @@ module.exports = {
       },
       input: "src/controllers/main.ts",
     },
-    flowForm: {
+    /* flowForm: {
       type: "browserVue3",
       title: "流程表单",
       input: "examples/vue3/src/web-content/module/flow-form/index.ts",
@@ -106,6 +106,6 @@ module.exports = {
       type: "browserVue3",
       title: "审批流程",
       input: "examples/vue3/src/web-content/module/flow-design/index.ts",
-    },
+    }, */
   },
 };

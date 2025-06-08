@@ -30,7 +30,7 @@
     "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.0-beta.1 --force",
     "build:dev": "cross-env NODE_ENV=development node ./dist/index.cjs build",
     "prebundle": "prebundle",
-    "node-dev:dev": "ts-node ./bin/webpages-packer.cjs --inc server,flowForm,flowDesign",
+    "node-dev:dev": "ts-node ./bin/webpages-packer.cjs --inc demoTest,flowForm,flowDesign",
     "node-dev:build": "ts-node ./bin/webpages-packer.cjs build",
     "copy:dist": "node ./scripts/copy-dist.cjs H:\\2026code\\demo\\doc-rspack\\packer-build-test\\files\\@cs\\webpages-packer"
   },

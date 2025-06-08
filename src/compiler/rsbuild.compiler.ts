@@ -24,7 +24,7 @@ export class RsbuildCompiler extends BaseCompiler {
       // onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ): Promise<RsbuildInstance | undefined> {
-    const cwd = process.cwd();
+    const cwd = context.rootPath || process.cwd();
     const configPath = path.join(cwd, tsConfigPath!);
     if (!fs.existsSync(configPath)) {
       throw new Error(
@@ -47,39 +47,49 @@ export class RsbuildCompiler extends BaseCompiler {
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
 
+    // eslint-disable-next-line no-useless-catch
+    try {
     // const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
-    const rsbuild: RsbuildInstance = await createRsbuild({
-      cwd,
-      callerName: "webpages-packer-cli",
-      rsbuildConfig,
-      loadEnv: false,
-    });
+      const rsbuild: RsbuildInstance = await createRsbuild({
+        cwd,
+        callerName: "webpages-packer-cli",
+        rsbuildConfig,
+        loadEnv: false,
+      });
 
-    /*
+      /*
     * onBeforeCreateCompiler 是在创建底层 Compiler 实例前触发的回调函数，
     * 当你执行 rsbuild.startDevServer、rsbuild.build 或 rsbuild.createCompiler 时，都会调用此钩子。
     * */
-    rsbuild!.onBeforeCreateCompiler(() => {
+      rsbuild!.onBeforeCreateCompiler(() => {
       // Skip watching files when not in dev mode or not in build watch mode
-      if (rsbuild.context.action !== "dev" && !isBuildWatch) {
-        // pass
-      }
-    });
+        if (rsbuild.context.action !== "dev" && !isBuildWatch) {
+          // pass
+          return;
+        }
 
-    logger.debug("context.action = ", context.action);
-    if (context.action === "dev" && isWatchEnabled) {
-      await rsbuild!.startDevServer();
-      logger.info("------------build website  rsbuild.startDevServer() end----------------");
-    }
-
-    if (rsbuild && context.action === "build") {
-      const buildInstance = await rsbuild.build({
-        watch: isWatchEnabled,
+        const files: string[] = [];
+        const config = rsbuild.getNormalizedConfig();
+        console.log(config);
       });
 
-      if (buildInstance) {
-        await buildInstance.close();
-        logger.info("------------build website end----------------");
+      logger.debug("context.action = ", context.action);
+      if (context.action === "dev" && isWatchEnabled) {
+        await rsbuild!.startDevServer();
+        logger.info("------------build website  rsbuild.startDevServer() end----------------");
+      }
+
+      if (rsbuild && context.action === "build") {
+        const buildInstance = await rsbuild.build({
+          watch: isWatchEnabled,
+        });
+
+        /*
+      * 关闭构建实例
+      * */
+        if (buildInstance) {
+          await buildInstance.close();
+          logger.info("------------build website end----------------");
         /* if (isWatchEnabled) {
           onBeforeRestartServer(buildInstance.close);
         }
@@ -87,9 +97,13 @@ export class RsbuildCompiler extends BaseCompiler {
           await buildInstance.close();
           logger.info("------------build website end----------------");
         } */
+        }
       }
-    }
 
-    return rsbuild!;
+      return rsbuild!;
+    }
+    catch (error) {
+      throw error;
+    }
   }
 }

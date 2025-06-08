@@ -25,12 +25,26 @@ const entryFormatMap = new Map<number, GeneratePackResultType>();
  * @returns {{nodeEntries: PackerEntryItemType[], isVue2: boolean, webEntries: PackerEntryItemType[], isVue3: boolean}}
  */
 export function formatEntry(context: InternalContext): GeneratePackResultType {
-  const { config, uuid } = context;
+  const { config, uuid, commandOptions } = context;
+
+  const entries = get(config, "entries", {});
+
+  const includeStr = commandOptions.find(item => item.name === "include");
+  let buildIncludes: string[] = [];
+  if (context.action === "dev") {
+    if (includeStr && includeStr.value) {
+      buildIncludes.push(...includeStr.value.split(","));
+    }
+  }
+  if (context.action === "build") {
+    buildIncludes = Object.keys(entries) as string[];
+  }
+
+  // 判断是否已经格式化过，如果已经格式化过，则直接返回
   if (entryFormatMap.has(uuid)) {
     return entryFormatMap.get(uuid) as GeneratePackResultType;
   }
 
-  const entries = get(config, "entries", {});
   const configResult: GeneratePackResultType = {
     rootPath: context.rootPath,
     isWebBuild: false,
@@ -55,7 +69,7 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
       process.exit(1);
     }
 
-    if (entry.type === "node") {
+    if (entry.type === "node" && buildIncludes.includes(key)) {
       if (typeof entry.output === "object") {
         const fileName = entry.output?.fileName || "main.js";
         const filePath = entry.output?.filePath || "dist";
@@ -75,19 +89,21 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
       configResult.isServerBuild = true;
     }
 
-    if (["browserVue3", "browserVue2"].includes(entry.type)) {
+    if (["browserVue3", "browserVue2"].includes(entry.type) && buildIncludes.includes(key)) {
       configResult.webEntries.push(entryConfig);
       configResult.isWebBuild = true;
-    }
 
-    // 判断vue版本，后续使用
-    if (entry.type === "browserVue3") {
-      configResult.isVue3 = true;
-    }
-    if (entry.type === "browserVue2") {
-      configResult.isVue2 = true;
+      // 判断vue版本，后续使用
+      if (entry.type === "browserVue3") {
+        configResult.isVue3 = true;
+      }
+      if (entry.type === "browserVue2") {
+        configResult.isVue2 = true;
+      }
     }
   });
+
   entryFormatMap.set(uuid, configResult);
+
   return configResult;
 }
