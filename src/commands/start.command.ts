@@ -34,7 +34,7 @@ export class StartCommand extends AbstractCommand {
       options.push({ name: "typeCheck", value: command.typeCheck });
       options.push({ name: "exec", value: command.exec });
 
-      logger.log("Starting packer server", command);
+      logger.debug("Starting packer server command", command);
       try {
         await this.action.handle(options);
       }

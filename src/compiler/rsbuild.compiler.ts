@@ -5,7 +5,6 @@ import { createRsbuild, RsbuildInstance } from "@rsbuild/core";
 import get from "lodash.get";
 
 import { logger } from "../logger.ts";
-import { onBeforeRestartServer } from "../restart.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
 
@@ -69,7 +68,8 @@ export class RsbuildCompiler extends BaseCompiler {
 
     logger.debug("context.action = ", context.action);
     if (context.action === "dev" && isWatchEnabled) {
-      rsbuild!.startDevServer();
+      await rsbuild!.startDevServer();
+      logger.info("------------build website  rsbuild.startDevServer() end----------------");
     }
 
     if (rsbuild && context.action === "build") {
@@ -78,12 +78,15 @@ export class RsbuildCompiler extends BaseCompiler {
       });
 
       if (buildInstance) {
-        if (isWatchEnabled) {
+        await buildInstance.close();
+        logger.info("------------build website end----------------");
+        /* if (isWatchEnabled) {
           onBeforeRestartServer(buildInstance.close);
         }
         else {
           await buildInstance.close();
-        }
+          logger.info("------------build website end----------------");
+        } */
       }
     }
 
