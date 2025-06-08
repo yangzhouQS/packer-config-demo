@@ -1,14 +1,15 @@
-import { RsbuildConfig } from "@rsbuild/core";
+import { RsbuildConfig, RsbuildPlugins } from "@rsbuild/core";
+import { interopDefault } from "../helpers";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { InternalContext } from "../types/context.ts";
 
 export async function packerVue3Plugin(context: InternalContext): Promise<RsbuildConfig> {
   const { isVue3, isVue2 } = formatEntry(context);
-  // const plugins: RsbuildPlugins = [];
+  const plugins: RsbuildPlugins = [];
   // const rsbuildConfig = {
   // };
   if (isVue3) {
-    /* const [{ pluginVue }, { pluginBabel }, { pluginVueJsx }, { pluginLess }] = await Promise.all([
+    const [{ pluginVue }, { pluginBabel }, { pluginVueJsx }, { pluginLess }] = await Promise.all([
       interopDefault(import("@rsbuild/plugin-vue")),
       interopDefault(import("@rsbuild/plugin-babel")),
       interopDefault(import("@rsbuild/plugin-vue-jsx")),
@@ -25,7 +26,7 @@ export async function packerVue3Plugin(context: InternalContext): Promise<Rsbuil
         },
       }),
       pluginLess(),
-    ); */
+    );
     /* const { rsbuildVue3Config } = await import("@cs/webpages-packer-browser-vue3");
     rsbuildConfig = rsbuildVue3Config.rsbuildConfig; */
     // const ret = await interopDefault(import("@cs/webpages-packer-browser-vue3"));
@@ -36,6 +37,6 @@ export async function packerVue3Plugin(context: InternalContext): Promise<Rsbuil
     // rsbuildConfig = {};
   }
   return {
-    // plugins,
+    plugins,
   };
 }

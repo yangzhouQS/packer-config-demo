@@ -1,8 +1,8 @@
-import {defineConfig, LibConfig} from '@rslib/core';
-import pkgJson from './package.json';
-import type {Configuration} from '@rspack/core';
-import prebundleConfig from './prebundle.config';
-import {type Minify} from "@rsbuild/core";
+import type { Minify } from "@rsbuild/core";
+import type { Configuration } from "@rspack/core";
+import { defineConfig } from "@rslib/core";
+import pkgJson from "./package.json";
+import prebundleConfig from "./prebundle.config";
 
 const define = {
   PACKER_VERSION: JSON.stringify(pkgJson.version),
@@ -10,24 +10,31 @@ const define = {
 };
 
 export const commonExternals: Array<string | RegExp> = [
-  'webpack',
+  "webpack",
   /[\\/]compiled[\\/]/,
 ];
 
 const regexpMap: Record<string, RegExp> = {};
 
 for (const item of prebundleConfig.dependencies) {
-  const depName = typeof item === 'string' ? item : item.name;
+  const depName = typeof item === "string" ? item : item.name;
   regexpMap[depName] = new RegExp(`compiled[\\/]${depName}(?:[\\/]|$)`);
 }
 
-const externals: Configuration['externals'] = [
-  'webpack',
-  '@rspack/core',
-  '@rsbuild/core',
-  '@rsbuild/core/client/hmr',
-  '@rsbuild/core/client/overlay',
-  /*({request}, callback) => {
+const externals: Configuration["externals"] = [
+  "webpack",
+  "@rspack/core",
+  "@rsbuild/core",
+  "@rsbuild/core/client/hmr",
+  "@rsbuild/core/client/overlay",
+  "fs-extra",
+  /* css预处理依赖插件 */
+  "@rsbuild/plugin-less",
+  /* vue3依赖插件 */
+  "@rsbuild/plugin-vue",
+  "@rsbuild/plugin-babel",
+  "@rsbuild/plugin-vue-jsx",
+  /* ({request}, callback) => {
     const entries = Object.entries(regexpMap);
     if (request) {
       for (const [name, test] of entries) {
@@ -42,7 +49,7 @@ const externals: Configuration['externals'] = [
       }
     }
     callback();
-  },*/
+  }, */
 ];
 
 export const nodeMinifyConfig: Minify = {
@@ -67,26 +74,26 @@ export default defineConfig({
   },
   lib: [
     {
-      format: 'esm',
+      format: "esm",
       // syntax: ['node 18'],
-      syntax: 'es2021',
+      syntax: "es2021",
       dts: true,
       output: {
         minify: nodeMinifyConfig,
       },
     },
     {
-      format: 'cjs',
-      syntax: 'es2021',
+      format: "cjs",
+      syntax: "es2021",
       // syntax: ['node 18'],
       output: {
         minify: nodeMinifyConfig,
       },
     },
   ],
-  tools: {
+  /* tools: {
     rspack: {
       externals: commonExternals,
-    }
-  }
+    },
+  }, */
 });

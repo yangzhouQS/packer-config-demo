@@ -13,7 +13,6 @@ export async function packerWebCommonPlugin(context: InternalContext): Promise<R
   if (isVue3) {
     const vue3Config = await packerVue3Plugin(context);
     rsbuildConfig = mergeRsbuildConfig(rsbuildConfig, vue3Config);
-    // console.log(rsbuildVue3Config);
     // const {rsbuildVue3Config}  = await import("@cs/webpages-packer-browser-vue3");
     // rsbuildConfig = rsbuildVue3Config.rsbuildConfig
   }

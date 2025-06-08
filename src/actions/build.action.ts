@@ -1,30 +1,31 @@
-import {AbstractAction} from "./abstract.action";
-import {Input} from "../commands/command.input";
-import {FileSystemReader} from "../configuration/file-system.reader.ts";
-import {ConfigurationLoader} from "../configuration/configuration.loader";
-import {RsbuildCompiler} from "../compiler/rsbuild.compiler";
+import process from "node:process";
+import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
-import {defaultPackerConfig} from "../helpers/default-packer-config";
-import {packerPluginHtml} from "../plugins/html.ts";
-import {PackerConfigType} from "../types/config.ts";
-import {PACKER_NAME} from "../constants.ts";
-import {logger} from "../logger.ts";
-import {createContext} from "../createContext.ts";
-import {mergeRsbuildConfig} from "@rsbuild/core";
-import {packerPluginOutput} from "../plugins/output.ts";
-import {packerWebCommonPlugin} from "../plugins/webCommon.ts";
-import {packerPluginSource} from "../plugins/source.ts";
-import {packerPluginResolve} from "../plugins/resolve.ts";
-import {packerPluginServer} from "../plugins/server.ts";
-import {packerPluginDev} from "../plugins/dev.ts";
-
+import { Input } from "../commands/command.input";
+import { RsbuildCompiler } from "../compiler/rsbuild.compiler";
+import { ConfigurationLoader } from "../configuration/configuration.loader";
+import { FileSystemReader } from "../configuration/file-system.reader.ts";
+import { PACKER_NAME } from "../constants.ts";
+import { createContext } from "../createContext.ts";
+import { defaultPackerConfig } from "../helpers/default-packer-config";
+import { logger } from "../logger.ts";
+import { packerPluginDev } from "../plugins/dev.ts";
+import { packerPluginHtml } from "../plugins/html.ts";
+import { packerPluginOutput } from "../plugins/output.ts";
+import { packerPluginResolve } from "../plugins/resolve.ts";
+import { packerPluginServer } from "../plugins/server.ts";
+import { packerPluginSource } from "../plugins/source.ts";
+import { packerWebCommonPlugin } from "../plugins/webCommon.ts";
+import { PackerConfigType } from "../types/config.ts";
+import { InternalContext } from "../types/context.ts";
+import { AbstractAction } from "./abstract.action";
 
 export interface RunActionBuildArgOptions {
-  commandOptions: Input[]
-  isWatchEnabled: boolean
-  isDebugEnabled?: boolean
+  commandOptions: Input[];
+  isWatchEnabled: boolean;
+  isDebugEnabled?: boolean;
   pathToTsconfig?: string;
-  onSuccess?: () => void
+  onSuccess?: () => void;
 }
 
 export class BuildAction extends AbstractAction {
@@ -36,17 +37,18 @@ export class BuildAction extends AbstractAction {
   public async handle(commandOptions: Input[]): Promise<void> {
     try {
       const watchModeOption = commandOptions.find(
-        (option) => option.name === 'watch',
+        option => option.name === "watch",
       );
       const watchMode = !!(watchModeOption && watchModeOption.value);
-    } catch (error) {
+    }
+    catch (error) {
       console.log(error);
     }
   }
 
-  public async runBuild({commandOptions, isWatchEnabled, isDebugEnabled, onSuccess}: RunActionBuildArgOptions) {
+  public async runBuild({ commandOptions, isWatchEnabled, isDebugEnabled, onSuccess }: RunActionBuildArgOptions) {
     const configFileName = commandOptions.find(
-      (option) => option.name === 'config',
+      option => option.name === "config",
     )!.value as string;
 
     // 打包配置文件
@@ -56,35 +58,47 @@ export class BuildAction extends AbstractAction {
     // const resultConfig = await generatePackBuildConfig({packConfig: configuration, commandOptions, isWatchEnabled})
     // console.log(resultConfig);
 
-    await this.createRsbuildConfig(configuration, commandOptions);
+    const context = await createContext(configuration, commandOptions);
 
+    const buildConfig = await this.createRsbuildConfig(context, configuration, commandOptions);
 
     // 解析出站点和服务打包的配置
-    // console.log('--------runBuild-------------configuration');
+    console.log("--------runBuild-------------configuration");
     // console.log(configuration);
 
-    const rsbuildCompiler = new RsbuildCompiler();
-    rsbuildCompiler.run({
-      configuration,
-      extras: {
-        inputs: commandOptions,
-        watchMode: isWatchEnabled,
-        debug: isDebugEnabled
-      },
-      tsConfigPath: 'tsconfig.json',
-      onSuccess,
-    })
+    try {
+      const rsbuildCompiler = await new RsbuildCompiler();
+      await rsbuildCompiler.run({
+        configuration,
+        buildConfig,
+        context,
+        extras: {
+          inputs: commandOptions,
+          watchMode: isWatchEnabled,
+          debug: isDebugEnabled,
+        },
+        tsConfigPath: "tsconfig.json",
+        onSuccess,
+      });
+    }
+    catch (err) {
+      logger.error("Failed to start dev server.");
+      logger.error(err);
+      process.exit(1);
+    }
   }
 
   /**
    * 不支持vue2和vue3同时打包构建
+   * @param context
    * @param {PackerConfigType} configuration
+   * @param options
    * @returns {Promise<void>}
    */
-  async createRsbuildConfig(configuration: PackerConfigType,options: Input[]) {
-    const context = await createContext(configuration,options);
+  async createRsbuildConfig(context: InternalContext, configuration: PackerConfigType, options: Input[]): Promise<RsbuildConfig> {
+    // const context = await createContext(configuration, options);
     this.checkBuildVueVersion(configuration);
-    const rsConfig = mergeRsbuildConfig(
+    return mergeRsbuildConfig(
       await packerWebCommonPlugin(context),
       packerPluginHtml(context),
       packerPluginOutput(context),
@@ -92,8 +106,7 @@ export class BuildAction extends AbstractAction {
       packerPluginResolve(context),
       packerPluginServer(context),
       packerPluginDev(context),
-    )
-    console.log(rsConfig);
+    );
   }
 
   checkBuildVueVersion(configuration: PackerConfigType) {
@@ -102,10 +115,10 @@ export class BuildAction extends AbstractAction {
     let isVue3 = false;
     for (const entryName in entries) {
       const entry = entries[entryName];
-      if (entry.type === 'browserVue3') {
+      if (entry.type === "browserVue3") {
         isVue3 = true;
       }
-      if (entry.type === 'browserVue2') {
+      if (entry.type === "browserVue2") {
         isVue2 = true;
       }
     }

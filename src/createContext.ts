@@ -1,8 +1,8 @@
-import {InternalContext} from "./types/context.ts";
-import {Input} from "./commands/command.input.ts";
-import {PackerConfigType} from "./types/config.ts";
-import {CommandType} from "./types/command.ts";
-import {getAbsolutePath} from "./helpers/path.ts";
+import { Input } from "./commands/command.input.ts";
+import { getAbsolutePath } from "./helpers/path.ts";
+import { CommandType } from "./types/command.ts";
+import { PackerConfigType } from "./types/config.ts";
+import { InternalContext } from "./types/context.ts";
 
 /**
  * 创建上下文
@@ -11,17 +11,17 @@ import {getAbsolutePath} from "./helpers/path.ts";
  * @returns {Promise<InternalContext>}
  */
 export async function createContext(configuration: PackerConfigType, options: Input<CommandType>[]): Promise<InternalContext> {
-  const actionOption = options.find(item => item.name === 'action');
-  let action = actionOption?.value ? actionOption.value as CommandType : 'build';
+  const actionOption = options.find(item => item.name === "action");
+  const action = actionOption?.value ? actionOption.value as CommandType : "build";
   const rootPath = configuration.global?.cwd ? getAbsolutePath(process.cwd(), configuration.global.cwd) : process.cwd();
 
   return {
     version: PACKER_VERSION,
     rootPath,
-    distPath: '',
-    callerName: 'rsbuild',
+    distPath: "",
+    callerName: "rsbuild",
     action,
     config: configuration,
     commandOptions: options,
-  }
+  };
 }
