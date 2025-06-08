@@ -2,7 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createRsbuild, RsbuildInstance } from "@rsbuild/core";
+import get from "lodash.get";
 
+import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
 
@@ -16,7 +18,7 @@ export class RsbuildCompiler extends BaseCompiler {
   public async run(
     {
       tsConfigPath,
-      buildConfig,
+      rsbuildConfig,
       extras,
       context,
       // onSuccess,
@@ -28,6 +30,12 @@ export class RsbuildCompiler extends BaseCompiler {
       throw new Error(
         `Could not find TypeScript configuration file "${tsConfigPath!}".`,
       );
+    }
+
+    const entry = get(rsbuildConfig, "source.entry", {});
+    if (Object.keys(entry).length === 0) {
+      logger.warn("No entry found in packer-config.ts. egg.. {entries: {}}");
+      return;
     }
 
     const watchModeOption = extras.inputs.find(
@@ -43,7 +51,7 @@ export class RsbuildCompiler extends BaseCompiler {
     const rsbuild: RsbuildInstance = await createRsbuild({
       cwd,
       callerName: "webpages-packer-cli",
-      rsbuildConfig: buildConfig,
+      rsbuildConfig,
       loadEnv: false,
     });
 

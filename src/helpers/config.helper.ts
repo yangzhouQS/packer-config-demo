@@ -17,17 +17,25 @@ export function formatCommandInclude(context: InternalContext): string[] {
   return [];
 }
 
-export function formatEntry(context: InternalContext) {
-  const { config } = context;
+const entryFormatMap = new Map<number, any>();
+/**
+ * 格式化entry配置
+ * @param {InternalContext} context
+ * @returns {{nodeEntries: PackerEntryItemType[], isVue2: boolean, webEntries: PackerEntryItemType[], isVue3: boolean}}
+ */
+export function formatEntry(context: InternalContext): GeneratePackResultType {
+  const { config, uuid } = context;
+  if (entryFormatMap.has(uuid)) {
+    return entryFormatMap.get(uuid);
+  }
+
   const entries = get(config, "entries", {});
-  let isVue3 = false;
-  let isVue2 = false;
   const configResult: GeneratePackResultType = {
-    rootPath: "",
-    webConfig: {},
-    serverConfig: {},
+    rootPath: context.rootPath,
     isWebBuild: false,
-    isServerBuild: true,
+    isServerBuild: false,
+    webEntries: {},
+    nodeEntries: {},
     _privateMeta: {},
   };
 
@@ -47,6 +55,27 @@ export function formatEntry(context: InternalContext) {
     }
 
     if (entry.type === "node") {
+      if (typeof entry.output === "object") {
+        const fileName = entry.output?.fileName || "main.js";
+        const filePath = entry.output?.filePath || "dist";
+        entry.output = {
+          fileName,
+          filePath,
+        };
+      }
+      else if (typeof entry.output === "string") {
+        entry.output = {
+          fileName: entry.output,
+          filePath: "",
+        };
+      }
+      else {
+        entry.output = {
+          fileName: "main.js",
+          filePath: "dist",
+        };
+      }
+      Object.assign(entryConfig, { output: entry.output });
       nodeEntries.push(entryConfig);
       configResult.isServerBuild = true;
     }
@@ -58,16 +87,12 @@ export function formatEntry(context: InternalContext) {
 
     // 判断vue版本，后续使用
     if (entry.type === "browserVue3") {
-      isVue3 = true;
+      configResult.isVue3 = true;
     }
     if (entry.type === "browserVue2") {
-      isVue2 = true;
+      configResult.isVue2 = true;
     }
   });
-  return {
-    webEntries,
-    nodeEntries,
-    isVue3,
-    isVue2,
-  };
+  entryFormatMap.set(uuid, configResult);
+  return configResult;
 }

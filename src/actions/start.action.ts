@@ -4,7 +4,7 @@ import { BuildAction } from "./build.action.ts";
 
 export class StartAction extends BuildAction {
   public async handle(commandOptions: Input[]) {
-    console.log("------------------StartAction------------------");
+    logger.debug("------------------StartAction------------------");
 
     try {
       /* const configFileName = commandOptions.find(
@@ -24,12 +24,10 @@ export class StartAction extends BuildAction {
       // 是否启用 debug 模式，即是否启用 参数 --inspect
       const isDebugEnabled = !!(debugModeOption && debugModeOption.value);
 
-      // console.log('configFileName = ', configFileName);
-      // console.log('configuration = ', configuration);
-
       const onSuccess = () => {
         console.log("dev --- onSuccess");
       };
+
       await this.runBuild(
         {
           commandOptions,

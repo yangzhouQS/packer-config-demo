@@ -1,7 +1,7 @@
-import {PackerConfigType} from "./config.ts";
-import {Input} from "../commands/command.input.ts";
+import { Input } from "../commands/command.input.ts";
+import { PackerConfigType } from "./config.ts";
 
-export type PackerContext = {
+export interface PackerContext {
   /** The Packer version. */
   version: string;
   /** The root path of current project. */
@@ -14,7 +14,7 @@ export type PackerContext = {
    * - build: will be set when running `rsbuild build` or `rsbuild.build()`
    * - preview: will be set when running `rsbuild preview` or `rsbuild.preview()`
    */
-  action: 'dev' | 'build' | 'preview';
+  action: "dev" | "build" | "preview";
 
   /**
    * The name of the framework or tool that is currently invoking Rsbuild,
@@ -28,6 +28,10 @@ export type PackerContext = {
 
 /** The inner context. */
 export type InternalContext = PackerContext & {
+  /**
+   * The unique id of current context.
+   */
+  uuid: number;
   /** Current PackerConfigType config. */
   config: Readonly<PackerConfigType>;
 
@@ -35,4 +39,4 @@ export type InternalContext = PackerContext & {
    * 命令行参数数组
    */
   commandOptions: Input[];
-}
+};

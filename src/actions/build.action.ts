@@ -1,21 +1,26 @@
+import path from "node:path";
 import process from "node:process";
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
 import { Input } from "../commands/command.input";
-import { RsbuildCompiler } from "../compiler/rsbuild.compiler";
+import { RspackCompiler } from "../compiler/rspack.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
-import { PACKER_NAME } from "../constants.ts";
+import { PACKER_NAME, RSPACK_BUILD_ERROR } from "../constants.ts";
 import { createContext } from "../createContext.ts";
+import { formatEntry } from "../helpers/config.helper.ts";
 import { defaultPackerConfig } from "../helpers/default-packer-config";
+import { createOnSuccessHook } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { packerPluginDev } from "../plugins/dev.ts";
 import { packerPluginHtml } from "../plugins/html.ts";
+import { packerServicePlugin } from "../plugins/node-service.ts";
 import { packerPluginOutput } from "../plugins/output.ts";
 import { packerPluginResolve } from "../plugins/resolve.ts";
 import { packerPluginServer } from "../plugins/server.ts";
 import { packerPluginSource } from "../plugins/source.ts";
-import { packerWebCommonPlugin } from "../plugins/webCommon.ts";
+import { packerWebCommonPlugin } from "../plugins/web-common.ts";
+import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
 import { PackerConfigType } from "../types/config.ts";
 import { InternalContext } from "../types/context.ts";
 import { AbstractAction } from "./abstract.action";
@@ -43,16 +48,11 @@ export class BuildAction extends AbstractAction {
       // 是否启用 watch
       const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
-      const onSuccess = () => {
-        // pass
-      };
-
       await this.runBuild(
         {
           commandOptions,
           isWatchEnabled,
           isDebugEnabled: false,
-          onSuccess,
         },
       );
     }
@@ -61,7 +61,7 @@ export class BuildAction extends AbstractAction {
     }
   }
 
-  public async runBuild({ commandOptions, isWatchEnabled, isDebugEnabled, onSuccess }: RunActionBuildArgOptions) {
+  public async runBuild({ commandOptions, isWatchEnabled, isDebugEnabled }: RunActionBuildArgOptions) {
     const configFileName = commandOptions.find(
       option => option.name === "config",
     )!.value as string;
@@ -70,33 +70,56 @@ export class BuildAction extends AbstractAction {
     let configuration = await this.loader.load(configFileName);
     configuration = deepmerge(defaultPackerConfig, configuration);
 
-    // const resultConfig = await generatePackBuildConfig({packConfig: configuration, commandOptions, isWatchEnabled})
-    // console.log(resultConfig);
-
     const context = await createContext(configuration, commandOptions);
 
-    const buildConfig = await this.createRsbuildConfig(context, configuration, commandOptions);
+    const rsbuildConfig = await this.createRsbuildConfig(context, configuration);
+
+    const rspackConfig = await this.createRspackConfig(context);
 
     // 解析出站点和服务打包的配置
-    console.log("--------runBuild-------------configuration");
+    logger.debug("--------runBuild-------------configuration");
 
+    const onSuccess = this.createBuildCallback(context);
+
+    const buildParams = {
+      configuration,
+      rsbuildConfig,
+      rspackConfig,
+      context,
+      extras: {
+        inputs: commandOptions,
+        watchMode: isWatchEnabled,
+        debug: isDebugEnabled,
+      },
+      tsConfigPath: "tsconfig.json",
+      onSuccess,
+    } as RunRsbuildCompilerArgOptions;
+
+    /* 构建站点模块 */
     try {
-      const rsbuildCompiler = await new RsbuildCompiler();
-      await rsbuildCompiler.run({
-        configuration,
-        buildConfig,
-        context,
-        extras: {
-          inputs: commandOptions,
-          watchMode: isWatchEnabled,
-          debug: isDebugEnabled,
-        },
-        tsConfigPath: "tsconfig.json",
-        onSuccess,
-      });
+      logger.info("--------------- rsbuild website module ---------------");
+      // const rsbuildCompiler = await new RsbuildCompiler();
+      // await rsbuildCompiler.run(buildParams);
     }
     catch (err) {
-      logger.error("Failed to start dev server.");
+      logger.error("Failed to RsbuildCompiler error.");
+      logger.error(err);
+      process.exit(1);
+    }
+    finally {
+      logger.info("--------------- rsbuild website --------------- end");
+    }
+
+    /* 构建服务模块 */
+    try {
+      const rsPackCompiler = new RspackCompiler();
+      await rsPackCompiler.run(buildParams);
+    }
+    catch (err) {
+      const isRspackError = err instanceof Error && err.message === RSPACK_BUILD_ERROR;
+      if (!isRspackError) {
+        logger.error(`[commands ${context.action}] Failed to build.`);
+      }
       logger.error(err);
       process.exit(1);
     }
@@ -106,11 +129,9 @@ export class BuildAction extends AbstractAction {
    * 不支持vue2和vue3同时打包构建
    * @param context
    * @param {PackerConfigType} configuration
-   * @param options
    * @returns {Promise<void>}
    */
-  async createRsbuildConfig(context: InternalContext, configuration: PackerConfigType, options: Input[]): Promise<RsbuildConfig> {
-    // const context = await createContext(configuration, options);
+  async createRsbuildConfig(context: InternalContext, configuration: PackerConfigType): Promise<RsbuildConfig> {
     this.checkBuildVueVersion(configuration);
     return mergeRsbuildConfig(
       await packerWebCommonPlugin(context),
@@ -120,6 +141,32 @@ export class BuildAction extends AbstractAction {
       packerPluginResolve(context),
       packerPluginServer(context),
       packerPluginDev(context),
+    );
+  }
+
+  /**
+   * 创建服务打包配置
+   * @param {InternalContext} context
+   * @returns {Promise<void>}
+   */
+  async createRspackConfig(context: InternalContext) {
+    return packerServicePlugin(context);
+  }
+
+  createBuildCallback(context: InternalContext) {
+    const { isServerBuild } = formatEntry(context);
+    if (!isServerBuild) {
+      return () => {};
+    }
+    return createOnSuccessHook(
+      "controllers/main",
+      "src",
+      true,
+      path.join(context.rootPath, "dist"),
+      "node",
+      {
+        shell: false,
+      },
     );
   }
 

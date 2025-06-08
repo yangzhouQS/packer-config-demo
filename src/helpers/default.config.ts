@@ -1,6 +1,8 @@
-import {__dirname} from '../constants'
-import {IgnorePluginOptions, rspack} from '@rspack/core';
-import {ChainedHtmlOption} from "../types/config.ts";
+import process from "node:process";
+import { rspack } from "@rspack/core";
+import { __dirname } from "../constants";
+
+const isProduction = process.env.NODE_ENV === "production";
 
 /**
  * 默认打包配置
@@ -11,48 +13,47 @@ export const DEFAULT_PACK_CONFIG = {
     // clear: [],
     copy: {},
     node: {
-      rootOutPath: 'dist/',
+      rootOutPath: "dist/",
       packerConfig: {
         node: {
           __dirname: false,
           __filename: false,
-          global: true
+          global: true,
         },
         optimization: {
-          moduleIds: 'named'
+          moduleIds: "named",
         },
         externals: [],
-        ignoreWarnings: []
-      }
+        ignoreWarnings: [],
+      },
     },
     browserVue3: {
-      rootOutPath: 'dist/',
+      rootOutPath: "dist/",
       packerConfig: {
         resolve: {
-          extensions: ['.js', '.ts', '.json', '.tsx', '.vue'] as string[]
+          extensions: [".js", ".ts", ".json", ".tsx", ".vue"] as string[],
         },
         externals: {
-          vue: 'Vue',
-          axios: 'axios',
-          'vue-router': 'VueRouter',
-        }
-      }
-    }
+          "vue": "Vue",
+          "axios": "axios",
+          "vue-router": "VueRouter",
+        },
+      },
+    },
   },
   server: {
     port: 8080,
     staticPath: "dist/",
     prefix: "",
     packerConfig: {},
-    proxy: {}
+    proxy: {},
   },
-  entries: {}
-}
-
+  entries: {},
+};
 
 export const DEFAULT_RSBUILD_CONFIG = {
   plugins: [
-    /*pluginBabel({
+    /* pluginBabel({
       include: /\.(?:jsx|tsx)$/,
     }),
     pluginVue(),
@@ -61,64 +62,64 @@ export const DEFAULT_RSBUILD_CONFIG = {
         transformOn: true,
       },
     }),
-    pluginLess(),*/
+    pluginLess(), */
   ].filter(Boolean),
   tools: {// 与底层工具有关的选项
-    /*rspack: (config: any, {env}: any) => {
+    /* rspack: (config: any, {env}: any) => {
       return config;
-    },*/
-    /*rspack: {
+    }, */
+    /* rspack: {
       watchOptions: {
         ignored: /\.git/,
       },
-    },*/
-    /*bundlerChain: (chain, { CHAIN_ID }) => {
+    }, */
+    /* bundlerChain: (chain, { CHAIN_ID }) => {
       chain.plugin('rsdoctor').use(RsdoctorRspackPlugin, [
         {
           // 配置项
           // ...
         },
       ]);
-    },*/
+    }, */
   },
   resolve: {
     alias: {
       // '@': '/src',
     },
     // 默认值: ['.ts', '.tsx', '.mjs', '.js', '.jsx', '.json']
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: [".ts", ".tsx", ".js"],
   },
   output: {
-    target: 'web',
+    target: "web",
     cleanDistPath: false,
     copy: [],
     externals: {
-      /*vue: 'Vue',
+      /* vue: 'Vue',
       axios: 'axios',
       'vue-router': 'VueRouter',
       'element-plus': 'ElementPlus',
       '@cs/element-pro': 'ElementPro',
       '@cs/js-inner-web-framework': 'InnerWebFramework',
       '@cs/table-pro': 'TablePro',
-      '@element-plus/icons-vue': 'ElementPlusIconsVue',*/
+      '@element-plus/icons-vue': 'ElementPlusIconsVue', */
     },
   },
   html: {
-    /*title: ({entryName}: ChainedHtmlOption<string>) => {
+    /* title: ({entryName}: ChainedHtmlOption<string>) => {
       const titles = {
         'flow-design': '审批流程设计',
         'flow-form': '流程表单',
       };
       return titles[entryName] || '默认标题';
-    },*/
-    mountId: 'app',
-    /*template({entryName}) {
+    }, */
+    mountId: "app",
+    /* template({entryName}) {
       const templates = {
         'flow-design': './src/web-content/module/flow-design/index.html',
         'flow-form': './src/web-content/module/flow-form/index.html',
       };
       return templates[entryName];
-    },*/
+    }, */
   },
   source: { // 与输入的源代码相关的选项
     entry: {
@@ -129,9 +130,9 @@ export const DEFAULT_RSBUILD_CONFIG = {
   dev: {
     hmr: false,
     watchFiles: {
-      paths: ['src/web-content/**/*']
+      paths: ["src/web-content/**/*"],
     },
-    writeToDisk: (file: string) => !file.includes('.hot-update.'),
+    writeToDisk: (file: string) => !file.includes(".hot-update."),
     progressBar: true,
     lazyCompilation: {
       entries: true,
@@ -141,8 +142,8 @@ export const DEFAULT_RSBUILD_CONFIG = {
   server: {
     // 与 Rsbuild 服务器有关的选项
     // 在本地开发和预览时都会生效
-    host: '0.0.0.0',
-    base: '',
+    host: "0.0.0.0",
+    base: "",
     port: 8080,
     cors: true,
     // open: '/flow/flow-form.html?productId=1328203429577728&moduleId=1328216389878784#/',
@@ -151,14 +152,14 @@ export const DEFAULT_RSBUILD_CONFIG = {
 };
 
 const lazyImports = [
-  '@nestjs/microservices',
-  '@nestjs/microservices/microservices-module',
-  '@nestjs/websockets/socket-module',
-  '@nestjs/websockets',
+  "@nestjs/microservices",
+  "@nestjs/microservices/microservices-module",
+  "@nestjs/websockets/socket-module",
+  "@nestjs/websockets",
   // 'class-validator',
   // 'class-transformer',
-  'class-transformer/storage',
-  '@fastify/static',
+  "class-transformer/storage",
+  "@fastify/static",
 ];
 
 const _ignorePlugin: any[] = [];
@@ -173,7 +174,8 @@ lazyImports.forEach((lazyImport) => {
           require.resolve(resource, {
             paths: [process.cwd()],
           });
-        } catch (e) {
+        }
+        catch (e) {
           return true;
         }
         return false;
@@ -188,8 +190,8 @@ lazyImports.forEach((lazyImport) => {
  */
 export const DEFAULT_RSPACK_CONFIG = {
   context: __dirname,
-  // mode: 'development',
-  target: 'node',
+  mode: "production",
+  target: "node",
   optimization: {
     minimize: false, // 对产物进行压缩
     nodeEnv: false,
@@ -199,6 +201,7 @@ export const DEFAULT_RSPACK_CONFIG = {
     __dirname: false,
     __filename: false,
   },
+  devtools: !isProduction ? "inline-source-map" : false,
   plugins: [
     ..._ignorePlugin,
   ],
@@ -210,7 +213,7 @@ export const DEFAULT_RSPACK_CONFIG = {
     poll: 1000, // 轮询监听时间
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: [".ts", ".tsx", ".js"],
     // tsConfig: path.resolve(__dirname, './tsconfig.json'),
   },
   experiments: {
@@ -220,19 +223,19 @@ export const DEFAULT_RSPACK_CONFIG = {
       imports: true,
     },
   },
-  entry: {
+  /* entry: {
     // main: './src/controllers/main.ts',
   },
   output: {
-    path: './dist', // path.resolve(__dirname, './dist'),
-    filename: '[name].js',
-  },
+    // path: "./dist", // path.resolve(__dirname, './dist'),
+    // filename: "[name].js",
+  }, */
   ignoreWarnings: [/^(?!CriticalDependenciesWarning$)/],
-  externals: [/*nodeExternals() as any*/],
-  externalsPresets: {node: true},
-  module: {
+  externals: [/* nodeExternals() as any */],
+  externalsPresets: { node: true },
+  /* module: {
     rules: [
-      /*{
+      /!* {
         test: /.tsx?$/,
         use: [
           {
@@ -244,28 +247,27 @@ export const DEFAULT_RSPACK_CONFIG = {
           },
         ],
         exclude: /node_modules/,
-      },*/
+      }, *!/
     ],
-  },
-  devServer: {
-    host: '0.0.0.0',
-    port: 3031
-  }
+  }, */
+  /* devServer: {
+    host: "0.0.0.0",
+    port: 3031,
+  }, */
 };
-
 
 /**
  * 服务器默认配置
  * @type {{port: number, open: boolean, hmr: boolean, host: string, base: string, cors: boolean}}
  */
 export const defaultWebServeConfig = {
-  base: '',
+  base: "",
   cors: true,
 
-  host: '0.0.0.0',
+  host: "0.0.0.0",
   port: 8080,
   open: false,
-  prefix: '',
+  prefix: "",
   // proxy: {},
 };
 
@@ -274,14 +276,14 @@ export const defaultWebServeConfig = {
  * @type {{target: string, cleanDistPath: boolean, copy: any[], externals: {vue: string, axios: string, 'vue-router': string, 'element-plus': string, '@element-plus/icons-vue': string}}}
  */
 export const defaultWebOutputConfig = {
-  target: 'web',
+  target: "web",
   cleanDistPath: false,
   // copy: [],
   externals: {
-    vue: 'Vue',
-    axios: 'axios',
-    'vue-router': 'VueRouter',
-    'element-plus': 'ElementPlus',
-    '@element-plus/icons-vue': 'ElementPlusIconsVue',
+    "vue": "Vue",
+    "axios": "axios",
+    "vue-router": "VueRouter",
+    "element-plus": "ElementPlus",
+    "@element-plus/icons-vue": "ElementPlusIconsVue",
   },
 };

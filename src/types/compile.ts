@@ -1,3 +1,4 @@
+import type { RspackOptions } from "@rspack/core";
 import { RsbuildConfig } from "@rsbuild/core";
 import { Input } from "../commands/command.input";
 import { PackerConfigType } from "./config";
@@ -11,7 +12,8 @@ interface RsbuildCompilerExtras {
 
 export interface RunRsbuildCompilerArgOptions<T = RsbuildCompilerExtras> {
   configuration: PackerConfigType;
-  buildConfig: RsbuildConfig | (() => Promise<RsbuildConfig>);
+  rsbuildConfig?: RsbuildConfig;
+  rspackConfig?: RspackOptions;
   context: InternalContext;
   tsConfigPath?: string;
   extras: T;

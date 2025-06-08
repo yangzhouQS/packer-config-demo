@@ -1,3 +1,4 @@
+import process from "node:process";
 import { Input } from "./commands/command.input.ts";
 import { getAbsolutePath } from "./helpers/path.ts";
 import { CommandType } from "./types/command.ts";
@@ -16,6 +17,7 @@ export async function createContext(configuration: PackerConfigType, options: In
   const rootPath = configuration.global?.cwd ? getAbsolutePath(process.cwd(), configuration.global.cwd) : process.cwd();
 
   return {
+    uuid: Date.now(),
     version: PACKER_VERSION,
     rootPath,
     distPath: "",

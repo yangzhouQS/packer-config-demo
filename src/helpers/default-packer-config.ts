@@ -1,4 +1,4 @@
-import {PackerConfigType} from "../types/config";
+import { PackerConfigType } from "../types/config";
 
 /**
  * Default packer configuration
@@ -10,30 +10,30 @@ export const defaultPackerConfig: PackerConfigType = {
     clear: [],
     copy: {},
     browserVue2: {
-      rootOutPath: 'dist/browser/',
+      rootOutPath: "dist/browser/",
       // packerConfig: {}
     },
     browserVue3: {
-      rootOutPath: 'dist/browser/',
+      rootOutPath: "dist/browser/",
       // packerConfig: {}
     },
-    /*library: {
+    /* library: {
       rootOutPath: 'dist/lib/',
       // packerConfig: {}
-    },*/
+    }, */
     libraryVue3: {
-      rootOutPath: 'dist/lib/',
+      rootOutPath: "dist/lib/",
       // packerConfig: {}
     },
     node: {
-      rootOutPath: 'dist/server/',
+      rootOutPath: "dist/server/",
       // packerConfig: {}
-    }
+    },
   },
   server: {
     port: 8080,
-    staticPath: '',
+    staticPath: "",
     // packerConfig: {}
   },
-  entries: {}
+  entries: {},
 };
