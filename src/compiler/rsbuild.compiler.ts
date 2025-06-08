@@ -2,17 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createRsbuild, RsbuildInstance } from "@rsbuild/core";
-import { Input } from "../commands/command.input";
-import { createAfterCallback } from "../helpers/process-hook.ts";
 
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
 
-interface RsbuildCompilerExtras {
+/* interface RsbuildCompilerExtras {
   inputs: Input[];
   debug?: boolean;
   watchMode?: boolean;
-}
+} */
 
 export class RsbuildCompiler extends BaseCompiler {
   public async run(
@@ -21,7 +19,7 @@ export class RsbuildCompiler extends BaseCompiler {
       buildConfig,
       extras,
       context,
-      onSuccess,
+      // onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ): Promise<RsbuildInstance | undefined> {
     const cwd = process.cwd();
@@ -40,13 +38,10 @@ export class RsbuildCompiler extends BaseCompiler {
     const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
-    console.log({ isWatchEnabled, isBuildWatch });
     let watch: boolean | undefined;
 
-    const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
+    // const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
     let rsbuild: RsbuildInstance;
-
-    console.log(buildConfig);
 
     if (extras.watchMode || watch) {
       rsbuild = await createRsbuild({

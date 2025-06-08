@@ -35,11 +35,26 @@ export class BuildAction extends AbstractAction {
   );
 
   public async handle(commandOptions: Input[]): Promise<void> {
+    console.log("------------------BuildAction------------------");
     try {
       const watchModeOption = commandOptions.find(
         option => option.name === "watch",
       );
-      const watchMode = !!(watchModeOption && watchModeOption.value);
+      // 是否启用 watch
+      const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
+
+      const onSuccess = () => {
+        // pass
+      };
+
+      await this.runBuild(
+        {
+          commandOptions,
+          isWatchEnabled,
+          isDebugEnabled: false,
+          onSuccess,
+        },
+      );
     }
     catch (error) {
       console.log(error);

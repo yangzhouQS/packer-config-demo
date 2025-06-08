@@ -8,7 +8,7 @@ import { Input } from "./command.input";
 
 export class StartCommand extends AbstractCommand {
   public load(packerCli: PackerCli): void {
-    packerCli.cli.command("start", "Starts the packer server").alias("dev").option("-c, --config [path]", "Path to configuration file; e.g. ./packer-config.js").option("-w, --watch", "Run in watch mode (live-reload).", { default: true }).option("-inc, --include [moduleName]", "local build modules to include; e.g. --include flowDesign,flowForm", { default: "" }).option(
+    packerCli.cli.command("", "Starts the packer server").alias("dev").option("-c, --config [path]", "Path to configuration file; e.g. ./packer-config.js").option("-w, --watch", "Run in watch mode (live-reload).", { default: true }).option("-inc, --include [moduleName]", "local build modules to include; e.g. --include flowDesign,flowForm", { default: "" }).option(
       "--env <env>",
       "Sets process.env.NODE_ENV to the specified value for access within the configuration.",
       {
