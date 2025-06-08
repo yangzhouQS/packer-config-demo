@@ -38,19 +38,14 @@ export class RsbuildCompiler extends BaseCompiler {
     const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
-    let watch: boolean | undefined;
 
     // const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
-    let rsbuild: RsbuildInstance;
-
-    if (extras.watchMode || watch) {
-      rsbuild = await createRsbuild({
-        cwd,
-        callerName: "webpages-packer-cli",
-        rsbuildConfig: buildConfig,
-        loadEnv: false,
-      });
-    }
+    const rsbuild: RsbuildInstance = await createRsbuild({
+      cwd,
+      callerName: "webpages-packer-cli",
+      rsbuildConfig: buildConfig,
+      loadEnv: false,
+    });
 
     /*
     * onBeforeCreateCompiler 是在创建底层 Compiler 实例前触发的回调函数，
@@ -63,8 +58,13 @@ export class RsbuildCompiler extends BaseCompiler {
       }
     });
 
-    if (isWatchEnabled) {
+    console.log("context.action = ", context.action);
+    if (context.action === "dev" && isWatchEnabled) {
       rsbuild!.startDevServer();
+    }
+
+    if (context.action === "build") {
+      rsbuild!.build();
     }
 
     return rsbuild!;
