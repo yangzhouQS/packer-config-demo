@@ -159,10 +159,7 @@ export class BuildAction extends AbstractAction {
 
   createBuildCallback(context: InternalContext) {
     const { isServerBuild } = formatEntry(context);
-    /* return () => {
-      logger.success("------------------------构建成功");
-    }; */
-    if (!isServerBuild) {
+    if (!isServerBuild || context.action === "build") {
       return () => {};
     }
     return createOnSuccessHook(

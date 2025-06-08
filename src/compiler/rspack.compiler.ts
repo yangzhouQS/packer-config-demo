@@ -92,7 +92,6 @@ export class RspackCompiler extends BaseCompiler {
       compiler.watch({}, afterCallback);
     }
     else if (compiler) {
-      console.log("--------------compiler.run(afterCallback)-----------");
       compiler.run(afterCallback);
       /* compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);

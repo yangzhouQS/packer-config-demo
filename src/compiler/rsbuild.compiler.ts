@@ -76,7 +76,6 @@ export class RsbuildCompiler extends BaseCompiler {
       logger.debug("context.action = ", context.action);
       if (context.action === "dev" && isWatchEnabled) {
         await rsbuild!.startDevServer();
-        logger.info("------------build website  rsbuild.startDevServer() end----------------");
       }
 
       if (rsbuild && context.action === "build") {
