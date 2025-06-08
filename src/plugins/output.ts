@@ -1,21 +1,21 @@
-import {RsbuildConfig} from "@rsbuild/core";
-import {InternalContext} from "../types/context.ts";
 import path from "node:path";
-import {formatEntry} from "../helpers/config.helper.ts";
-import $lodash from "lodash";
+import { RsbuildConfig } from "@rsbuild/core";
+import { get } from "lodash";
+import { formatEntry } from "../helpers/config.helper.ts";
+import { InternalContext } from "../types/context.ts";
 
-export function packerPluginOutput(context: InternalContext,): RsbuildConfig {
-  const _copy: { from: string; to: string; }[] = [];
-  const {config,rootPath} = context;
+export function packerPluginOutput(context: InternalContext): RsbuildConfig {
+  const _copy: { from: string; to: string }[] = [];
+  const { config, rootPath } = context;
   const copy = config.global?.copy || {};
 
-  const {isVue2,isVue3} = formatEntry(context)
+  const { isVue2, isVue3 } = formatEntry(context);
   let externals = {};
-  if(isVue3){
-    externals = $lodash.get(config,'global.browserVue3.packerConfig.externals', {});
+  if (isVue3) {
+    externals = get(config, "global.browserVue3.packerConfig.externals", {});
   }
-  if(isVue2){
-    externals = $lodash.get(config,'global.browserVue2.packerConfig.externals', {});
+  if (isVue2) {
+    externals = get(config, "global.browserVue2.packerConfig.externals", {});
   }
 
   Object.keys(copy).forEach((key) => {
@@ -30,7 +30,7 @@ export function packerPluginOutput(context: InternalContext,): RsbuildConfig {
       target: "web",
       cleanDistPath: false,
       copy: _copy,
-      externals
-    }
-  }
+      externals,
+    },
+  };
 }

@@ -53,7 +53,7 @@ export class RsbuildCompiler extends BaseCompiler {
       });
     }
 
-    rsbuild!.onBeforeCreateCompiler(() => {
+    /* rsbuild!.onBeforeCreateCompiler(() => {
     // Skip watching files when not in dev mode or not in build watch mode
       if (rsbuild.context.action !== "dev" && !isBuildWatch) {
         // pass
@@ -64,7 +64,7 @@ export class RsbuildCompiler extends BaseCompiler {
       // }
     });
 
-    rsbuild!.startDevServer();
+    rsbuild!.startDevServer(); */
 
     return rsbuild!;
   }

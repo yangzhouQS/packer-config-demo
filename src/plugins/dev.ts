@@ -1,27 +1,27 @@
-import {logger} from "../logger.ts";
-import {InternalContext} from "../types/context.ts";
-import {RsbuildConfig} from "@rsbuild/core";
-import $lodash from "lodash";
+import { RsbuildConfig } from "@rsbuild/core";
+import { get } from "lodash";
+import { logger } from "../logger.ts";
+import { InternalContext } from "../types/context.ts";
 
 /**
  * 打包插件开发环境配置
  * @param {InternalContext} context
  * @returns {RsbuildConfig}
  */
-export function packerPluginDev(context: InternalContext,): RsbuildConfig {
-  logger.debug('--------------packerPluginDev------------------');
+export function packerPluginDev(context: InternalContext): RsbuildConfig {
+  logger.debug("--------------packerPluginDev------------------");
 
-  const hmr = $lodash.get(context.config, 'server.hmr', true);
-  const progressBar = $lodash.get(context.config, 'server.progressBar', true);
+  const hmr = get(context.config, "server.hmr", true);
+  const progressBar = get(context.config, "server.progressBar", true);
   return {
     dev: {
       hmr,
       progressBar,
-      writeToDisk: (file) => !file.includes('.hot-update.'),
-      lazyCompilation:{
+      writeToDisk: file => !file.includes(".hot-update."),
+      lazyCompilation: {
         entries: true,
         imports: true,
-      }
-    }
-  }
+      },
+    },
+  };
 }

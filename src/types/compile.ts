@@ -1,5 +1,4 @@
 import { RsbuildConfig } from "@rsbuild/core";
-// import {RsbuildCompiler} from "../compiler/rsbuild.compiler";
 import { Input } from "../commands/command.input";
 import { PackerConfigType } from "./config";
 import { InternalContext } from "./context.ts";
