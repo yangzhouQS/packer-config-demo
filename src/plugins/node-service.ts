@@ -1,4 +1,5 @@
-import deepmerge from "deepmerge";
+import type { RspackOptions } from "@rspack/core";
+import { merge as webpackMerge } from "webpack-merge";
 import { __dirname } from "../constants.ts";
 import { getNodeEnv } from "../helpers";
 import { formatEntry } from "../helpers/config.helper.ts";
@@ -9,14 +10,20 @@ import { InternalContext } from "../types/context.ts";
  * @param {InternalContext} context
  * @returns {{mode: string, output: {path: string, filename: string}, entry: {[p: string]: string}, resolve: {extensions: string[]}, ignoreWarnings: any[], experiments: {lazyCompilation: {entries: boolean, imports: boolean}}, module: {rules: any[]}, context: string, externals: any[], externalsPresets: {node: boolean}}}
  */
-export function packerServicePlugin(context: InternalContext) {
+export function packerServicePlugin(context: InternalContext): RspackOptions {
   const { nodeEntries, isServerBuild } = formatEntry(context);
   const entryConfig: Record<string, string> = {};
+  const outputConfig: Record<string, string> = {
+    path: "",
+    filename: "[name].js",
+  };
   if (nodeEntries.length > 0 && isServerBuild) {
     const serverConfig = nodeEntries[0];
     entryConfig[serverConfig.entryKey] = serverConfig.input;
+    outputConfig.path = serverConfig.output?.filePath || "dist";
+    outputConfig.filename = serverConfig.output?.fileName || "main.js";
   }
-  const rspackConfiguration = {
+  const rspackConfiguration: RspackOptions = {
     context: context.rootPath || __dirname,
     mode: getNodeEnv() || "none",
     resolve: {
@@ -37,6 +44,7 @@ export function packerServicePlugin(context: InternalContext) {
     output: {
       // path: path.resolve(__dirname, "./dist"),
       filename: "[name].js",
+      ...outputConfig,
     },
     ignoreWarnings: [],
     externals: [],
@@ -50,5 +58,5 @@ export function packerServicePlugin(context: InternalContext) {
     // pass
   }
 
-  return deepmerge(DEFAULT_RSPACK_CONFIG, rspackConfiguration);
+  return webpackMerge(DEFAULT_RSPACK_CONFIG, rspackConfiguration);
 }

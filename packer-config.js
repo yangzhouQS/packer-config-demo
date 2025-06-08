@@ -88,11 +88,11 @@ module.exports = {
     },
   },
   entries: {
-    server: {
+    demoTest: {
       type: "node",
       name: "server",
       output: {
-        fileName: "main.js",
+        fileName: "demoTest.js",
         filePath: "dist/controllers",
       },
       input: "src/controllers/main.ts",

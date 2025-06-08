@@ -1,4 +1,4 @@
-import type { Compiler, MultiCompiler } from "@rspack/core";
+import type { Compiler, RspackOptions } from "@rspack/core";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -28,7 +28,7 @@ export class RspackCompiler extends BaseCompiler {
       );
     }
 
-    const entry = get(rspackConfig, "entry", {});
+    const entry = get(rspackConfig as RspackOptions, "entry", {});
     if (Object.keys(entry).length === 0) {
       logger.warn("No entry found in packer-config.ts. egg.. {entries: { server: {} }}");
       return null;
@@ -42,7 +42,7 @@ export class RspackCompiler extends BaseCompiler {
     const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
-    let compiler: MultiCompiler | Compiler | null;
+    let compiler: Compiler | null = null;
 
     const afterCallback = createAfterCallback(
       onSuccess,
@@ -50,7 +50,11 @@ export class RspackCompiler extends BaseCompiler {
     );
 
     try {
-      compiler = rspack(rspackConfig!, afterCallback);
+      console.log("rspackConfig = rspackConfig ---" /* rspackConfig */);
+      console.log(rspackConfig);
+      if (rspackConfig) {
+        compiler = rspack(rspackConfig, isWatchEnabled ? afterCallback : undefined);
+      }
     }
     catch (e) {
       if (e instanceof ValidationError) {
@@ -62,7 +66,6 @@ export class RspackCompiler extends BaseCompiler {
           callback(e);
         } */
         logger.error(e);
-        // return null;
       }
       throw e;
     }
@@ -74,10 +77,13 @@ export class RspackCompiler extends BaseCompiler {
       });
       compiler.watch({}, afterCallback);
     }
-    else {
-      compiler!.run(() => {
+    else if (compiler) {
+      compiler.run(() => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);
       });
+    }
+    else {
+      logger.error(`Packer is building your sources..., 服务构建失败.....\n`);
     }
 
     return compiler;

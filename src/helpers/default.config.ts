@@ -1,3 +1,4 @@
+import type { RspackOptions } from "@rspack/core";
 import process from "node:process";
 import { rspack } from "@rspack/core";
 import { __dirname } from "../constants";
@@ -188,7 +189,7 @@ lazyImports.forEach((lazyImport) => {
  *
  * @type {{context: any, mode: string, target: string, optimization: {minimize: boolean, nodeEnv: boolean}, node: {__dirname: boolean, __filename: boolean}, plugins: any[], watchOptions: {ignored: RegExp}, resolve: {extensions: string[], tsConfig: string}, experiments: {lazyCompilation: {entries: boolean, imports: boolean}}, entry: {}, output: {path: string, filename: string}, externals: any[], externalsPresets: {node: boolean}, module: {rules: {test: RegExp, use: {loader: string, options: {transpileOnly: boolean}}[], exclude: RegExp}[]}, devServer: {host: string, port: number}}}
  */
-export const DEFAULT_RSPACK_CONFIG = {
+export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
   context: __dirname,
   mode: "production",
   target: "node",
@@ -201,9 +202,9 @@ export const DEFAULT_RSPACK_CONFIG = {
     __dirname: false,
     __filename: false,
   },
-  devtools: !isProduction ? "inline-source-map" : false,
+  devtool: isProduction ? false : "source-map",
   plugins: [
-    ..._ignorePlugin,
+    // ..._ignorePlugin,
   ],
   watchOptions: {
     // for some systems, watching many files can result in a lot of CPU or memory usage
@@ -213,7 +214,7 @@ export const DEFAULT_RSPACK_CONFIG = {
     poll: 1000, // 轮询监听时间
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".ts", ".js"],
     // tsConfig: path.resolve(__dirname, './tsconfig.json'),
   },
   experiments: {
@@ -233,6 +234,7 @@ export const DEFAULT_RSPACK_CONFIG = {
   ignoreWarnings: [/^(?!CriticalDependenciesWarning$)/],
   externals: [/* nodeExternals() as any */],
   externalsPresets: { node: true },
+  stats: true,
   /* module: {
     rules: [
       /!* {

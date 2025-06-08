@@ -17,7 +17,8 @@ export function formatCommandInclude(context: InternalContext): string[] {
   return [];
 }
 
-const entryFormatMap = new Map<number, any>();
+const entryFormatMap = new Map<number, GeneratePackResultType>();
+
 /**
  * 格式化entry配置
  * @param {InternalContext} context
@@ -26,7 +27,7 @@ const entryFormatMap = new Map<number, any>();
 export function formatEntry(context: InternalContext): GeneratePackResultType {
   const { config, uuid } = context;
   if (entryFormatMap.has(uuid)) {
-    return entryFormatMap.get(uuid);
+    return entryFormatMap.get(uuid) as GeneratePackResultType;
   }
 
   const entries = get(config, "entries", {});
@@ -34,13 +35,13 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
     rootPath: context.rootPath,
     isWebBuild: false,
     isServerBuild: false,
-    webEntries: {},
-    nodeEntries: {},
+    webEntries: [],
+    nodeEntries: [],
     _privateMeta: {},
+    isVue3: false,
+    isVue2: false,
   };
 
-  const webEntries: PackerEntryItemType[] = [];
-  const nodeEntries: PackerEntryItemType[] = [];
   Object.entries(entries).forEach(([key, entry]: [string, PackerEntryItemType]) => {
     const entryConfig = {
       input: entry.input,
@@ -63,12 +64,6 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
           filePath,
         };
       }
-      else if (typeof entry.output === "string") {
-        entry.output = {
-          fileName: entry.output,
-          filePath: "",
-        };
-      }
       else {
         entry.output = {
           fileName: "main.js",
@@ -76,12 +71,12 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
         };
       }
       Object.assign(entryConfig, { output: entry.output });
-      nodeEntries.push(entryConfig);
+      configResult.nodeEntries.push(entryConfig);
       configResult.isServerBuild = true;
     }
 
     if (["browserVue3", "browserVue2"].includes(entry.type)) {
-      webEntries.push(entryConfig);
+      configResult.webEntries.push(entryConfig);
       configResult.isWebBuild = true;
     }
 

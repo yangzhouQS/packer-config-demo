@@ -21,7 +21,7 @@ export interface PackerEntryItemType {
   output?: {
     fileName?: string;
     filePath?: string;
-  } | string;
+  };
 }
 export interface PackerEntriesType {
   [key: string]: PackerEntryItemType;
@@ -79,8 +79,8 @@ export interface GeneratePackResultType {
   isWebBuild: boolean;
   isServerBuild: boolean;
 
-  webEntries: { [key: string]: PackerEntryItemType };
-  nodeEntries: { [key: string]: PackerEntryItemType };
+  webEntries: PackerEntryItemType [];
+  nodeEntries: PackerEntryItemType [];
   isVue3: boolean;
   isVue2: boolean;
 
