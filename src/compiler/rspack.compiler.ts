@@ -20,7 +20,7 @@ export class RspackCompiler extends BaseCompiler {
       onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ): Compiler | null {
-    const cwd = process.cwd();
+    const cwd = context.rootPath || process.cwd();
     const configPath = path.join(cwd, tsConfigPath!);
     if (!fs.existsSync(configPath)) {
       throw new Error(
@@ -50,9 +50,8 @@ export class RspackCompiler extends BaseCompiler {
     );
 
     try {
-      if (rspackConfig) {
-        compiler = rspack(rspackConfig, isWatchEnabled ? afterCallback : undefined);
-      }
+      // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
+      compiler = rspack(rspackConfig!, undefined);
     }
     catch (e) {
       if (e instanceof ValidationError) {
@@ -66,6 +65,10 @@ export class RspackCompiler extends BaseCompiler {
         logger.error(e);
       }
       throw e;
+    }
+
+    if (!compiler) {
+      return null;
     }
 
     const errorHandler = (error: Error | null, stats: Stats | MultiStats | undefined): void => {
@@ -89,7 +92,9 @@ export class RspackCompiler extends BaseCompiler {
       compiler.watch({}, afterCallback);
     }
     else if (compiler) {
-      compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
+      console.log("--------------compiler.run(afterCallback)-----------");
+      compiler.run(afterCallback);
+      /* compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);
         compiler.close((closeErr) => {
           if (closeErr) {
@@ -97,7 +102,7 @@ export class RspackCompiler extends BaseCompiler {
           }
           errorHandler(error, stats);
         });
-      });
+      }); */
     }
     else {
       logger.error(`Packer is building your sources..., 服务构建失败.....\n`);

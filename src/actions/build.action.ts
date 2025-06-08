@@ -108,7 +108,7 @@ export class BuildAction extends AbstractAction {
       process.exit(1);
     }
     finally {
-      logger.info("--------------- rsbuild website --------------- end");
+      logger.info("--------------- rsbuild website ------------------- end");
     }
 
     /* 构建服务模块 */
@@ -123,6 +123,9 @@ export class BuildAction extends AbstractAction {
       }
       logger.error(err);
       process.exit(1);
+    }
+    finally {
+      logger.info("--------------- rsbuild server --------------- end");
     }
   }
 
@@ -156,6 +159,9 @@ export class BuildAction extends AbstractAction {
 
   createBuildCallback(context: InternalContext) {
     const { isServerBuild } = formatEntry(context);
+    /* return () => {
+      logger.success("------------------------构建成功");
+    }; */
     if (!isServerBuild) {
       return () => {};
     }

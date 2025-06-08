@@ -158,10 +158,9 @@ export function isTTY(type: "stdin" | "stdout" = "stdout"): boolean {
 
 export function createAfterCallback(
   onSuccess: (() => void) | undefined,
-  // assetsManager: AssetsManager,
   watch: boolean | undefined,
 ) {
-  return (err: Error | null, stats?: Stats | MultiStats) => {
+  return (err: Error | null, stats?: Stats | MultiStats | undefined) => {
     // node 运行过程出现错误
     if (err && stats === undefined) {
       console.log(err);

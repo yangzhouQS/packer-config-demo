@@ -255,10 +255,10 @@ export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
       },
     ],
   },
-  /* devServer: {
+  devServer: {
     host: "0.0.0.0",
     port: 3031,
-  }, */
+  },
 };
 
 /**
