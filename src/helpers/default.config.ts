@@ -1,6 +1,8 @@
 import type { RspackOptions } from "@rspack/core";
 import process from "node:process";
 import { rspack } from "@rspack/core";
+// const nodeExternals = require("webpack-node-externals");
+import nodeExternals from "webpack-node-externals";
 import { __dirname } from "../constants";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -204,8 +206,10 @@ export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
   },
   devtool: isProduction ? false : "source-map",
   plugins: [
-    // ..._ignorePlugin,
+    new rspack.ProgressPlugin(),
+    ..._ignorePlugin,
   ],
+  stats: { preset: "errors-warnings", timings: true },
   watchOptions: {
     // for some systems, watching many files can result in a lot of CPU or memory usage
     // https://rspack.dev/config/watch#watchoptionsignored
@@ -232,16 +236,15 @@ export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
     // filename: "[name].js",
   }, */
   ignoreWarnings: [/^(?!CriticalDependenciesWarning$)/],
-  externals: [/* nodeExternals() as any */],
+  externals: [nodeExternals() as any],
   externalsPresets: { node: true },
-  stats: true,
-  /* module: {
+  module: {
     rules: [
-      /!* {
+      {
         test: /.tsx?$/,
         use: [
           {
-            loader: 'ts-loader',
+            loader: "ts-loader",
             options: {
               transpileOnly: true,
               // configFile: './tsconfig.json',
@@ -249,9 +252,9 @@ export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
           },
         ],
         exclude: /node_modules/,
-      }, *!/
+      },
     ],
-  }, */
+  },
   /* devServer: {
     host: "0.0.0.0",
     port: 3031,

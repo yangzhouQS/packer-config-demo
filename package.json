@@ -50,17 +50,18 @@
     "chokidar": "^4.0.3",
     "fs-extra": "^11.3.0",
     "lodash.get": "4.4.2",
-    "webpack-node-externals": "3.0.0"
+    "webpack-node-externals": "3.0.0",
+    "ts-node": "10.9.2",
+    "ts-loader": "9.5.2"
   },
   "devDependencies": {
     "@cs/js-eslint-config-library": "^0.0.2",
     "@cs/webpages-packer-browser-vue3": "^3.0.0-beta.4",
-    "ts-node": "10.9.2",
-    "ts-loader": "9.5.2",
     "@swc/core": "1.11.24",
     "@swc/types": "0.1.21",
     "@types/deepmerge": "^2.2.3",
     "@types/fs-extra": "^11.0.4",
+    "@types/webpack-node-externals": "^3.0.4",
     "@types/lodash.get": "^4.4.2",
     "cross-env": "^7.0.3",
     "prebundle": "1.3.3",

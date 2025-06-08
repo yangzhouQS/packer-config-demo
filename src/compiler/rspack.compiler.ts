@@ -50,8 +50,7 @@ export class RspackCompiler extends BaseCompiler {
     );
 
     try {
-      console.log("rspackConfig = rspackConfig ---" /* rspackConfig */);
-      console.log(rspackConfig);
+      console.log("rspackConfig----", rspackConfig);
       if (rspackConfig) {
         compiler = rspack(rspackConfig, isWatchEnabled ? afterCallback : undefined);
       }

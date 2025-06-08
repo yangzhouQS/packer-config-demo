@@ -1,4 +1,5 @@
 import type { RspackOptions } from "@rspack/core";
+import path from "node:path";
 import { merge as webpackMerge } from "webpack-merge";
 import { __dirname } from "../constants.ts";
 import { getNodeEnv } from "../helpers";
@@ -19,9 +20,9 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
   };
   if (nodeEntries.length > 0 && isServerBuild) {
     const serverConfig = nodeEntries[0];
-    entryConfig[serverConfig.entryKey] = serverConfig.input;
-    outputConfig.path = serverConfig.output?.filePath || "dist";
-    outputConfig.filename = serverConfig.output?.fileName || "main.js";
+    entryConfig[serverConfig.entryKey] = path.resolve(context.rootPath, serverConfig.input);
+    outputConfig.path = path.resolve(context.rootPath, serverConfig.output?.filePath || "dist");
+    outputConfig.filename = serverConfig.output?.fileName || "[name].js" || "main.js";
   }
   const rspackConfiguration: RspackOptions = {
     context: context.rootPath || __dirname,
