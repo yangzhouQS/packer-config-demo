@@ -19,13 +19,6 @@ export default {
   },
   dependencies:[
     'tinyglobby',
-    // 'lodash',
-    /*{
-      name: 'lodash',
-      ignoreDts: true,
-      // strip sourcemap comment
-      prettier: true,
-    },*/
     {
       name: 'chokidar',
       // strip sourcemap comment

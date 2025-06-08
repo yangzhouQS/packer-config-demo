@@ -1,6 +1,6 @@
 import path from "node:path";
 import { RsbuildConfig } from "@rsbuild/core";
-import { get } from "lodash";
+import get from "lodash.get";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { InternalContext } from "../types/context.ts";
 

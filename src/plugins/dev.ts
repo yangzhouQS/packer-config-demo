@@ -1,5 +1,5 @@
 import { RsbuildConfig } from "@rsbuild/core";
-import { get } from "lodash";
+import get from "lodash.get";
 import { logger } from "../logger.ts";
 import { InternalContext } from "../types/context.ts";
 

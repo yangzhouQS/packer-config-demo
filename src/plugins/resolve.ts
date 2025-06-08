@@ -1,5 +1,5 @@
 import { RsbuildConfig } from "@rsbuild/core";
-import { get, union } from "lodash";
+import get from "lodash.get";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { InternalContext } from "../types/context.ts";
 
@@ -13,7 +13,7 @@ export function packerPluginResolve(context: InternalContext): RsbuildConfig {
   const _extensions = get(config, `global.${isVue3 ? "browserVue3" : "browserVue2"}.packerConfig.resolve.extensions`, []);
 
   if (Array.isArray(_extensions)) {
-    extensions = union(extensions.concat(_extensions));
+    extensions = extensions.concat(_extensions);
   }
 
   return {

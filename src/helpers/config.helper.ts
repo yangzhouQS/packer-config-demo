@@ -1,6 +1,6 @@
 import process from "node:process";
-import { logger } from "@rsbuild/core";
-import { find, forEach, get } from "lodash";
+import get from "lodash.get";
+import { logger } from "../logger.ts";
 import { GeneratePackResultType, PackerEntryItemType } from "../types/config.ts";
 import { InternalContext } from "../types/context.ts";
 
@@ -10,7 +10,7 @@ import { InternalContext } from "../types/context.ts";
  * @returns {any}
  */
 export function formatCommandInclude(context: InternalContext): string[] {
-  const includeOption = find(context.commandOptions, item => item.name === "include");
+  const includeOption = context.commandOptions.find(item => item.name === "include");
   if (includeOption && includeOption.value) {
     return includeOption?.value.split(",");
   }
@@ -33,7 +33,7 @@ export function formatEntry(context: InternalContext) {
 
   const webEntries: PackerEntryItemType[] = [];
   const nodeEntries: PackerEntryItemType[] = [];
-  forEach(entries, (entry: PackerEntryItemType, key: string) => {
+  Object.entries(entries).forEach(([key, entry]: [string, PackerEntryItemType]) => {
     const entryConfig = {
       input: entry.input,
       title: entry.title || key,
@@ -64,7 +64,6 @@ export function formatEntry(context: InternalContext) {
       isVue2 = true;
     }
   });
-
   return {
     webEntries,
     nodeEntries,

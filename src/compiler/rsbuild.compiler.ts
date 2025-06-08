@@ -40,10 +40,14 @@ export class RsbuildCompiler extends BaseCompiler {
     const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
+    console.log({ isWatchEnabled, isBuildWatch });
     let watch: boolean | undefined;
 
     const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
     let rsbuild: RsbuildInstance;
+
+    console.log(buildConfig);
+
     if (extras.watchMode || watch) {
       rsbuild = await createRsbuild({
         cwd,
@@ -53,18 +57,20 @@ export class RsbuildCompiler extends BaseCompiler {
       });
     }
 
-    /* rsbuild!.onBeforeCreateCompiler(() => {
+    /*
+    * onBeforeCreateCompiler 是在创建底层 Compiler 实例前触发的回调函数，
+    * 当你执行 rsbuild.startDevServer、rsbuild.build 或 rsbuild.createCompiler 时，都会调用此钩子。
+    * */
+    rsbuild!.onBeforeCreateCompiler(() => {
     // Skip watching files when not in dev mode or not in build watch mode
       if (rsbuild.context.action !== "dev" && !isBuildWatch) {
         // pass
       }
-
-      // if (isWatchEnabled) {
-      //
-      // }
     });
 
-    rsbuild!.startDevServer(); */
+    if (isWatchEnabled) {
+      rsbuild!.startDevServer();
+    }
 
     return rsbuild!;
   }

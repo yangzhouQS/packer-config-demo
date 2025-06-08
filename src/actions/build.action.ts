@@ -64,7 +64,6 @@ export class BuildAction extends AbstractAction {
 
     // 解析出站点和服务打包的配置
     console.log("--------runBuild-------------configuration");
-    // console.log(configuration);
 
     try {
       const rsbuildCompiler = await new RsbuildCompiler();

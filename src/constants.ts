@@ -1,45 +1,45 @@
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const __filename: string = fileURLToPath(import.meta.url);
 export const __dirname: string = dirname(__filename);
 
 // Paths
 // loaders will be emitted to the same folder of the main bundle
-export const ROOT_DIST_DIR = 'dist';
-export const HTML_DIST_DIR = './';
-export const JS_DIST_DIR = 'static/js';
-export const CSS_DIST_DIR = 'static/css';
-export const SVG_DIST_DIR = 'static/svg';
-export const FONT_DIST_DIR = 'static/font';
-export const WASM_DIST_DIR = 'static/wasm';
-export const IMAGE_DIST_DIR = 'static/image';
-export const MEDIA_DIST_DIR = 'static/media';
-export const ASSETS_DIST_DIR = 'static/assets';
+export const ROOT_DIST_DIR = "dist";
+export const HTML_DIST_DIR = "./";
+export const JS_DIST_DIR = "static/js";
+export const CSS_DIST_DIR = "static/css";
+export const SVG_DIST_DIR = "static/svg";
+export const FONT_DIST_DIR = "static/font";
+export const WASM_DIST_DIR = "static/wasm";
+export const IMAGE_DIST_DIR = "static/image";
+export const MEDIA_DIST_DIR = "static/media";
+export const ASSETS_DIST_DIR = "static/assets";
 export const LOADER_PATH: string = join(__dirname);
-export const STATIC_PATH: string = join(__dirname, '../static');
-export const COMPILED_PATH: string = join(__dirname, '../compiled');
-export const TS_CONFIG_FILE = 'tsconfig.json';
-export const HMR_SOCKET_PATH = '/rsbuild-hmr';
-export const RSBUILD_OUTPUTS_PATH = '.rsbuild';
+export const STATIC_PATH: string = join(__dirname, "../static");
+export const COMPILED_PATH: string = join(__dirname, "../compiled");
+export const TS_CONFIG_FILE = "tsconfig.json";
+export const HMR_SOCKET_PATH = "/rsbuild-hmr";
+export const RSBUILD_OUTPUTS_PATH = ".rsbuild";
 
 // Defaults
 export const DEFAULT_PORT = 3000;
 export const DEFAULT_DATA_URL_SIZE = 4096;
-export const DEFAULT_MOUNT_ID = 'root';
-export const DEFAULT_DEV_HOST = '0.0.0.0';
-export const DEFAULT_ASSET_PREFIX = '/';
-export const DEFAULT_BASE_URL = '/';
+export const DEFAULT_MOUNT_ID = "root";
+export const DEFAULT_DEV_HOST = "0.0.0.0";
+export const DEFAULT_ASSET_PREFIX = "/";
+export const DEFAULT_BASE_URL = "/";
 export const DEFAULT_WEB_BROWSERSLIST: string[] = [
-  'chrome >= 87',
-  'edge >= 88',
-  'firefox >= 78',
-  'safari >= 14',
+  "chrome >= 87",
+  "edge >= 88",
+  "firefox >= 78",
+  "safari >= 14",
 ];
 export const DEFAULT_BROWSERSLIST: Record<string, string[]> = {
-  web: DEFAULT_WEB_BROWSERSLIST,
-  'web-worker': DEFAULT_WEB_BROWSERSLIST,
-  node: ['node >= 16'],
+  "web": DEFAULT_WEB_BROWSERSLIST,
+  "web-worker": DEFAULT_WEB_BROWSERSLIST,
+  "node": ["node >= 16"],
 };
 
 // RegExp
@@ -50,112 +50,110 @@ export const CSS_REGEX: RegExp = /\.css$/;
 export const NODE_MODULES_REGEX: RegExp = /[\\/]node_modules[\\/]/;
 
 // Plugins
-export const PLUGIN_SWC_NAME = 'rsbuild:swc';
-export const PLUGIN_CSS_NAME = 'rsbuild:css';
+export const PLUGIN_SWC_NAME = "rsbuild:swc";
+export const PLUGIN_CSS_NAME = "rsbuild:css";
 
 // Extensions
 export const FONT_EXTENSIONS: string[] = [
-  'woff',
-  'woff2',
-  'eot',
-  'ttf',
-  'otf',
-  'ttc',
+  "woff",
+  "woff2",
+  "eot",
+  "ttf",
+  "otf",
+  "ttc",
 ];
 export const IMAGE_EXTENSIONS: string[] = [
-  'png',
-  'jpg',
-  'jpeg',
-  'pjpeg',
-  'pjp',
-  'gif',
-  'bmp',
-  'webp',
-  'ico',
-  'apng',
-  'avif',
-  'tif',
-  'tiff',
-  'jfif',
-  'cur',
+  "png",
+  "jpg",
+  "jpeg",
+  "pjpeg",
+  "pjp",
+  "gif",
+  "bmp",
+  "webp",
+  "ico",
+  "apng",
+  "avif",
+  "tif",
+  "tiff",
+  "jfif",
+  "cur",
 ];
-export const VIDEO_EXTENSIONS: string[] = ['mp4', 'webm', 'ogg', 'mov'];
+export const VIDEO_EXTENSIONS: string[] = ["mp4", "webm", "ogg", "mov"];
 export const AUDIO_EXTENSIONS: string[] = [
-  'mp3',
-  'wav',
-  'flac',
-  'aac',
-  'm4a',
-  'opus',
+  "mp3",
+  "wav",
+  "flac",
+  "aac",
+  "m4a",
+  "opus",
 ];
-
 
 /**
  * Node.js built-in modules.
  * Copied from https://github.com/webpack/webpack/blob/dd44b206a9c50f4b4cb4d134e1a0bd0387b159a3/lib/node/NodeTargetPlugin.js#L12-L72
  */
 export const nodeBuiltInModules: Array<string | RegExp> = [
-  'assert',
-  'assert/strict',
-  'async_hooks',
-  'buffer',
-  'child_process',
-  'cluster',
-  'console',
-  'constants',
-  'crypto',
-  'dgram',
-  'diagnostics_channel',
-  'dns',
-  'dns/promises',
-  'domain',
-  'events',
-  'fs',
-  'fs/promises',
-  'http',
-  'http2',
-  'https',
-  'inspector',
-  'inspector/promises',
-  'module',
-  'net',
-  'os',
-  'path',
-  'path/posix',
-  'path/win32',
-  'perf_hooks',
-  'process',
-  'punycode',
-  'querystring',
-  'readline',
-  'readline/promises',
-  'repl',
-  'stream',
-  'stream/consumers',
-  'stream/promises',
-  'stream/web',
-  'string_decoder',
-  'sys',
-  'timers',
-  'timers/promises',
-  'tls',
-  'trace_events',
-  'tty',
-  'url',
-  'util',
-  'util/types',
-  'v8',
-  'vm',
-  'wasi',
-  'worker_threads',
-  'zlib',
+  "assert",
+  "assert/strict",
+  "async_hooks",
+  "buffer",
+  "child_process",
+  "cluster",
+  "console",
+  "constants",
+  "crypto",
+  "dgram",
+  "diagnostics_channel",
+  "dns",
+  "dns/promises",
+  "domain",
+  "events",
+  "fs",
+  "fs/promises",
+  "http",
+  "http2",
+  "https",
+  "inspector",
+  "inspector/promises",
+  "module",
+  "net",
+  "os",
+  "path",
+  "path/posix",
+  "path/win32",
+  "perf_hooks",
+  "process",
+  "punycode",
+  "querystring",
+  "readline",
+  "readline/promises",
+  "repl",
+  "stream",
+  "stream/consumers",
+  "stream/promises",
+  "stream/web",
+  "string_decoder",
+  "sys",
+  "timers",
+  "timers/promises",
+  "tls",
+  "trace_events",
+  "tty",
+  "url",
+  "util",
+  "util/types",
+  "v8",
+  "vm",
+  "wasi",
+  "worker_threads",
+  "zlib",
   /^node:/,
 
   // cspell:word pnpapi
   // Yarn PnP adds pnpapi as "builtin"
-  'pnpapi',
+  "pnpapi",
 ];
-
 
 export interface Configuration {
   language?: string;
@@ -171,11 +169,11 @@ export interface Configuration {
  * @type {{language: string, sourceRoot: string, collection: string, entryFile: string, exec: string, monorepo: boolean}}
  */
 export const defaultNestCliConfiguration: Required<Configuration> = {
-  language: 'ts',
-  sourceRoot: 'src',
-  collection: '@nestjs/schematics',
-  entryFile: 'main',
-  exec: 'node',
+  language: "ts",
+  sourceRoot: "src",
+  collection: "@nestjs/schematics",
+  entryFile: "main",
+  exec: "node",
   monorepo: false,
 };
 
@@ -184,26 +182,26 @@ export const defaultNestCliConfiguration: Required<Configuration> = {
  * @type {string[]}
  */
 export const PACKER_CONFIG_FILES = [
-  'packer-config.mjs',
-  'packer-config.ts',
-  'packer-config.js',
-  'packer-config.cjs',
-  'packer-config.mts',
-  'packer-config.cts',
+  "packer-config.mjs",
+  "packer-config.ts",
+  "packer-config.js",
+  "packer-config.cjs",
+  "packer-config.mts",
+  "packer-config.cts",
 ];
 
 export const HTML_CONFIG_FILES = [
-  'index.html',
-  'main.html',
-  'template.html',
-  'module.html',
-  'app.html',
+  "index.html",
+  "main.html",
+  "template.html",
+  "module.html",
+  "app.html",
 ];
 
 /**
  * 打包器名称
  * @type {string}
  */
-export const PACKER_NAME = 'webpages-packer'
+export const PACKER_NAME = "webpages-packer";
 
-export const RSPACK_BUILD_ERROR = 'Rspack build failed.';
+export const RSPACK_BUILD_ERROR = "Rspack build failed.";
