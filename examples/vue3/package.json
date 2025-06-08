@@ -1,0 +1,25 @@
+{
+  "name": "examples",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yangzhouQS/packer-config-demo.git"
+  },
+  "private": true,
+  "dependencies": {
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0",
+    "@cs/element-pro": "^1.7.6",
+    "@cs/element-yearrow-theme": "^1.0.13",
+    "@cs/js-inner-web-framework": "^0.2.0",
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
+    "pinia": "^3.0.1"
+  }
+}

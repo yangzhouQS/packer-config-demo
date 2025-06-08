@@ -1,3 +1,16 @@
+import eslintConfig from "@cs/js-eslint-config-library";
+export default eslintConfig({
+  ignores: ["dist"],
+  // 自定义验证规则
+  rules: {
+    "no-console": "off", /* 允许使用console.log */
+    "no-case-declarations": "off", /* 允许在switch case中创建变量 */
+    "no-new": "off",
+  },
+})
+
+
+/*
 import js from '@eslint/js';
 import globals from 'globals';
 import ts from 'typescript-eslint';
@@ -22,9 +35,9 @@ export default [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ),
-  /*
+  /!*
   js.configs.recommended,
-  ...ts.configs.recommended,*/
+  ...ts.configs.recommended,*!/
   { ignores: ['dist/'] },
 
 
@@ -72,3 +85,4 @@ export default [
     },
   },
 ];
+*/

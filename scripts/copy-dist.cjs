@@ -7,7 +7,7 @@ if (!target) {
 }
 const rslog = require('rslog')
 
-let copyfile = ['dist', 'README.md', 'bin', 'package.json', 'compiled']
+let copyfile = ['dist', /*'README.md',*/ 'bin', /*'package.json', */'compiled']
 const path = require('path')
 const fs = require('fs-extra')
 // 清空 dist
