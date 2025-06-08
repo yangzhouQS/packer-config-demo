@@ -22,6 +22,9 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
         entries: true,
         imports: true,
       },
+      watchFiles: {
+        paths: ["src/web-content/**/*"],
+      },
     },
   };
 }
