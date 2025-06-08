@@ -60,13 +60,13 @@ export class RsbuildCompiler extends BaseCompiler {
     * 当你执行 rsbuild.startDevServer、rsbuild.build 或 rsbuild.createCompiler 时，都会调用此钩子。
     * */
     rsbuild!.onBeforeCreateCompiler(() => {
-    // Skip watching files when not in dev mode or not in build watch mode
+      // Skip watching files when not in dev mode or not in build watch mode
       if (rsbuild.context.action !== "dev" && !isBuildWatch) {
         // pass
       }
     });
 
-    console.log("context.action = ", context.action);
+    logger.debug("context.action = ", context.action);
     if (context.action === "dev" && isWatchEnabled) {
       rsbuild!.startDevServer();
     }

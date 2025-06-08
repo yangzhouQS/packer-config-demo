@@ -41,7 +41,7 @@ export class BuildAction extends AbstractAction {
   );
 
   public async handle(commandOptions: Input[]): Promise<void> {
-    console.log("------------------BuildAction------------------");
+    logger.debug("------------------BuildAction------------------");
     try {
       const watchModeOption = commandOptions.find(
         option => option.name === "watch",

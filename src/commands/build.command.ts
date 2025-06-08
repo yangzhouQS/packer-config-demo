@@ -25,7 +25,7 @@ export class BuildCommand extends AbstractCommand {
       .action(async (command: CommandTypeOptions) => {
         setNodeEnv(command.env);
         const options: Input[] = [];
-        console.log("----------------------BuildCommand----------------------");
+        logger.debug("----------------------BuildCommand----------------------");
 
         options.push({ name: "action", value: "build" });
         options.push({ name: "config", value: command.config });
@@ -37,7 +37,7 @@ export class BuildCommand extends AbstractCommand {
         // options.push({ name: "typeCheck", value: command.typeCheck });
         // options.push({ name: "exec", value: command.exec });
 
-        logger.log("Build packer server", command);
+        logger.debug("Build packer server", command);
         try {
           await this.action.handle(options);
         }

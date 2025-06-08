@@ -1,4 +1,4 @@
-import type { Compiler, RspackOptions } from "@rspack/core";
+import type { Compiler, MultiStats, RspackOptions, Stats } from "@rspack/core";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -50,7 +50,6 @@ export class RspackCompiler extends BaseCompiler {
     );
 
     try {
-      console.log("rspackConfig----", rspackConfig);
       if (rspackConfig) {
         compiler = rspack(rspackConfig, isWatchEnabled ? afterCallback : undefined);
       }
@@ -69,6 +68,19 @@ export class RspackCompiler extends BaseCompiler {
       throw e;
     }
 
+    const errorHandler = (error: Error | null, stats: Stats | MultiStats | undefined): void => {
+      if (error) {
+        logger.error(error);
+        process.exit(2);
+      }
+      if (stats?.hasErrors()) {
+        process.exitCode = 1;
+      }
+      if (!compiler || !stats) {
+        return undefined;
+      }
+    };
+
     if (compiler && isWatchEnabled) {
       compiler.hooks.watchRun.tapAsync(`${PACKER_NAME} info`, (params, callback) => {
         logger.success(`Success Packer is building your sources...\n`);
@@ -77,8 +89,14 @@ export class RspackCompiler extends BaseCompiler {
       compiler.watch({}, afterCallback);
     }
     else if (compiler) {
-      compiler.run(() => {
+      compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);
+        compiler.close((closeErr) => {
+          if (closeErr) {
+            logger.error(closeErr);
+          }
+          errorHandler(error, stats);
+        });
       });
     }
     else {
