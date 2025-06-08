@@ -22,7 +22,6 @@ export class PackerCli {
   }
 
   async registerCommands(): Promise<void> {
-    console.log("----------registerCommands------------");
     new StartCommand(new StartAction()).load(this);
     new BuildCommand(new BuildAction()).load(this);
 
