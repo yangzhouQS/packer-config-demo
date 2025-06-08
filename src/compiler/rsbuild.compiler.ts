@@ -65,12 +65,11 @@ export class RsbuildCompiler extends BaseCompiler {
       // Skip watching files when not in dev mode or not in build watch mode
         if (rsbuild.context.action !== "dev" && !isBuildWatch) {
           // pass
-          return;
+
         }
 
-        const files: string[] = [];
-        const config = rsbuild.getNormalizedConfig();
-        console.log(config);
+        // const files: string[] = [];
+        // const config = rsbuild.getNormalizedConfig();
       });
 
       logger.debug("context.action = ", context.action);
