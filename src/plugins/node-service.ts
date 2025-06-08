@@ -1,10 +1,13 @@
 import type { RspackOptions } from "@rspack/core";
 import path from "node:path";
+import process from "node:process";
+import fse from "fs-extra";
 import { merge as webpackMerge } from "webpack-merge";
 import { __dirname } from "../constants.ts";
 import { getNodeEnv } from "../helpers";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { DEFAULT_RSPACK_CONFIG } from "../helpers/default.config.ts";
+import { logger } from "../logger.ts";
 import { InternalContext } from "../types/context.ts";
 /**
  * 创建服务端打包配置
@@ -20,7 +23,12 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
   };
   if (nodeEntries.length > 0 && isServerBuild) {
     const serverConfig = nodeEntries[0];
-    entryConfig[serverConfig.entryKey] = path.resolve(context.rootPath, serverConfig.input);
+    const inputPath = path.resolve(context.rootPath, serverConfig.input);
+    if (!fse.existsSync(inputPath)) {
+      logger.error(`服务打包入口:${inputPath} not exists`);
+      process.exit(1);
+    }
+    entryConfig[serverConfig.entryKey] = inputPath;
     outputConfig.path = path.resolve(context.rootPath, serverConfig.output?.filePath || "dist");
     outputConfig.filename = serverConfig.output?.fileName || "[name].js" || "main.js";
   }

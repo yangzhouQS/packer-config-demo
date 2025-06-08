@@ -3,6 +3,7 @@ import process from "node:process";
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
 import { Input } from "../commands/command.input";
+import { RsbuildCompiler } from "../compiler/rsbuild.compiler.ts";
 import { RspackCompiler } from "../compiler/rspack.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
@@ -98,8 +99,8 @@ export class BuildAction extends AbstractAction {
     /* 构建站点模块 */
     try {
       logger.info("--------------- rsbuild website module ---------------");
-      // const rsbuildCompiler = await new RsbuildCompiler();
-      // await rsbuildCompiler.run(buildParams);
+      const rsbuildCompiler = await new RsbuildCompiler();
+      await rsbuildCompiler.run(buildParams);
     }
     catch (err) {
       logger.error("Failed to RsbuildCompiler error.");
