@@ -8,7 +8,7 @@ import { RspackCompiler } from "../compiler/rspack.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
 import { PACKER_NAME, RSPACK_BUILD_ERROR } from "../constants.ts";
-import { createContext } from "../createContext.ts";
+import { createContext } from "../create-context.ts";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { defaultPackerConfig } from "../helpers/default-packer-config";
 import { createOnSuccessHook } from "../helpers/process-hook.ts";

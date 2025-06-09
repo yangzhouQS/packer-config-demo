@@ -34,6 +34,7 @@ const externals: Configuration["externals"] = [
   "@rsbuild/plugin-vue",
   "@rsbuild/plugin-babel",
   "@rsbuild/plugin-vue-jsx",
+  "@cs/webpages-packer-browser-vue3",
   /* ({request}, callback) => {
     const entries = Object.entries(regexpMap);
     if (request) {
