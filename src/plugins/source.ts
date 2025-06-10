@@ -25,9 +25,9 @@ export function packerPluginSource(context: InternalContext): RsbuildConfig {
 
   return {
     source: {
-      decorators: {
+      /* decorators: {
         version: "legacy",
-      },
+      }, */
       entry: entryConfig,
     },
   };

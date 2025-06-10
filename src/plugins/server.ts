@@ -8,7 +8,10 @@ import { InternalContext } from "../types/context.ts";
  * @returns {RsbuildConfig}
  */
 export function packerPluginServer(context: InternalContext): RsbuildConfig {
-  const prefix = get(context.config, "server.prefix", "");
+  let prefix = get(context.config, "server.prefix", "");
+  if (prefix && !prefix.startsWith("/")) {
+    prefix = `/${prefix}`;
+  }
   const port = get(context.config, "server.port", 8080);
   return {
     server: {
