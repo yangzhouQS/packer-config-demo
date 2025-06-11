@@ -29,6 +29,7 @@ export class RspackCompiler extends BaseCompiler {
     }
 
     const entry = get(rspackConfig as RspackOptions, "entry", {});
+    console.log(entry);
     if (Object.keys(entry).length === 0) {
       logger.warn("No entry found in packer-config.ts. egg.. {entries: { server: {} }}");
       return null;

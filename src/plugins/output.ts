@@ -29,9 +29,9 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
     output: {
       target: "web",
       cleanDistPath: false,
-      polyfill: "entry",
-      copy: _copy,
-      externals,
+      // polyfill: "entry",
+      // copy: _copy,
+      // externals,
       overrideBrowserslist: [
         "> 1%",
         "not ie <= 10",

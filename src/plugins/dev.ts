@@ -28,6 +28,15 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
       watchFiles: {
         paths: ["src/web-content/**/*"],
       },
+      /* setupMiddlewares: [
+        (middlewares, devServer) => {
+          middlewares.unshift((req, res, next) => {
+            console.log("first");
+            console.log(devServer);
+            next();
+          });
+        },
+      ], */
     },
   };
 }
