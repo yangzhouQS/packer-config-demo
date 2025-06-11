@@ -29,6 +29,7 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
     output: {
       target: "web",
       cleanDistPath: false,
+      polyfill: "entry",
       copy: _copy,
       externals,
       overrideBrowserslist: [

@@ -1,4 +1,5 @@
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
+// import NodePolyfillWebpackPlugin from "node-polyfill-webpack-plugin";
 import { formatEntry } from "../helpers/config.helper.ts";
 import { InternalContext } from "../types/context.ts";
 import { packerVue3Plugin } from "./vue3-plugin.ts";
@@ -7,7 +8,7 @@ export async function packerWebCommonPlugin(context: InternalContext): Promise<R
   const { isVue3, isVue2 } = formatEntry(context);
   let rsbuildConfig = {
     // root: context.rootPath,
-    // plugins: [],
+    // plugins: [NodePolyfillWebpackPlugin()],
   };
   if (isVue3) {
     const vue3Config = await packerVue3Plugin(context);
