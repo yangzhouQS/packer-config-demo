@@ -31,6 +31,15 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
       cleanDistPath: false,
       copy: _copy,
       externals,
+      overrideBrowserslist: [
+        "> 1%",
+        "not ie <= 10",
+        "iOS >= 9",
+        "Android >= 4.4",
+        "last 2 versions",
+        "> 0.2%",
+        "not dead",
+      ],
     },
   };
 }

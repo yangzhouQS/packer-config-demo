@@ -15,6 +15,9 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   const progressBar = get(context.config, "server.progressBar", true);
   return {
     dev: {
+      client: {
+        overlay: true,
+      },
       hmr,
       progressBar,
       writeToDisk: file => !file.includes(".hot-update."),
