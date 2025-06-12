@@ -36,6 +36,7 @@
     "copy:dist": "node ./scripts/copy-dist.cjs H:\\2026code\\demo\\doc-rspack\\packer-build-test\\files\\@cs\\webpages-packer"
   },
   "dependencies": {
+    "http-proxy-middleware": "3.0.5",
     "cac": "^6.7.14",
     "tree-kill": "1.2.2",
     "deepmerge": "^4.3.1",

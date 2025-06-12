@@ -15,15 +15,15 @@ export function packerPluginServer(context: InternalContext): RsbuildConfig {
   const port = get(context.config, "server.port", 8080);
 
   const proxy = {
-    "/api": {
+    /* "/api": {
       target: "http://10.0.0.2:3013",
       pathRewrite: { "^/api": "" },
-    },
+    }, */
   };
 
   return {
     server: {
-      // proxy,
+      proxy,
       // 在本地开发和预览时都会生效
       host: "0.0.0.0",
       base: prefix,
