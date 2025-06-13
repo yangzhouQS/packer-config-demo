@@ -1,0 +1,31 @@
+application:
+  name: 'node-pm-inner-metadata-system'
+  port: 3013
+  serverPath: inner
+  profiles.active: 'dev-mc,local'
+  naming: false
+profiles.local:
+  logger:
+    level: 'info'
+  mysql:
+    metadata:
+      type: 'mysql'
+      host: '192.168.5.57'
+      port: 3306
+      username: 'yearrow-dev'
+      password: 'ClYkyo97iA'
+      database: 'mc_pf_ipm'
+      synchronize: false
+      timeout: 10000
+      logging: true
+  proxy:
+    enable: true
+    sites:
+      - proxyPrefix: '/'
+        targetUrl: 'http://dev-mc.yearrow.com'
+        secure: false
+        skipPath:
+          - 'inner'
+  auth:
+    authServerUrl: 'http://192.168.178.1:3013/inner'
+    authLogoutUrl: 'http://192.168.178.1:3013/inner'

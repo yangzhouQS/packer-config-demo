@@ -19,6 +19,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   const progressBar = get(context.config, "server.progressBar", true);
   return {
     dev: {
+      // assetPrefix: "/inner",
       client: {
         overlay: true,
       },

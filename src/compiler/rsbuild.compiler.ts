@@ -2,11 +2,82 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { createRsbuild, RsbuildInstance } from "@rsbuild/core";
-import { createProxyMiddleware } from "http-proxy-middleware";
 import get from "lodash.get";
 import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
+
+/* const proxyHandlerMap = new Map<string, any>();
+
+function findBestProxyMatch(path = "") {
+  if (proxyHandlerMap.has(path)) {
+    return proxyHandlerMap.get(path) || null;
+  }
+  const prefixes = Array.from(proxyHandlerMap.keys()).sort((a, b) => b.length - a.length);
+  console.log("prefixes = ", prefixes, path);
+  for (const prefix of prefixes) {
+    if (path.startsWith(prefix)) {
+      proxyHandlerMap.set(path, prefix);
+      return prefix;
+    }
+  }
+  proxyHandlerMap.set(path, null);
+  return null;
+}
+
+const sites = [
+  {
+    proxyPrefix: "/inner",
+    // targetUrl: "http://dev.yearrow.com",
+    targetUrl: "http://192.168.178.1:3013",
+    pathRewrite: {
+      "^/inner": "/inner",
+    },
+    // targetUrl: "http://192.168.1:8080",
+    skipPath: [],
+    // skipPath: ["inner", "approveServer"],
+  },
+  {
+    proxyPrefix: "/!*",
+    targetUrl: "http://dev-mc.yearrow.com",
+    skipPath: ["inner"],
+  },
+];
+sites.forEach((item) => {
+  const { proxyPrefix, targetUrl, skipPath, pathRewrite } = item;
+  console.log("skipPath = ", skipPath);
+
+  const filter = skipPath?.length > 0
+    ? (pathname: string) => {
+        return !skipPath.some((path) => {
+          const regex = new RegExp(`^/${path}(?:/|$)`);
+          return regex.test(pathname);
+        });
+      }
+    : undefined;
+
+  const options = {
+    target: targetUrl,
+    changeOrigin: true,
+    pathRewrite,
+    logLevel: console,
+    onProxyReq: (proxyReq: any) => {
+      proxyReq.setHeader("X-Proxied-By", "nest-proxy");
+    },
+  };
+
+  const handler = filter
+    ? createProxyMiddleware({
+        ...options,
+        pathFilter: filter,
+      })
+    : createProxyMiddleware(options);
+
+  console.log("proxyPrefix = ", proxyPrefix, " || ");
+  proxyHandlerMap.set(proxyPrefix, handler);
+
+  logger.info(`已代理地址：http://localhost:${proxyPrefix}:--->${targetUrl}`);
+}); */
 
 export class RsbuildCompiler extends BaseCompiler {
   public async run(
@@ -68,72 +139,35 @@ export class RsbuildCompiler extends BaseCompiler {
 
       logger.debug("context.action = ", context.action);
       if (rsbuild && context.action === "dev" && isWatchEnabled) {
-        // await rsbuild!.startDevServer();
-        const server = await rsbuild.createDevServer();
-        // console.log(server);
+        /* rsbuild.onBeforeStartDevServer(({ server }) => {
+          server.middlewares.use((req, res, next) => {
+            console.log("---onBeforeStartDevServer -- testReqMiddle------------", req.url);
+            try {
+              const matchedPrefix = findBestProxyMatch(req.url);
+              console.log("matchedPrefix = ", matchedPrefix);
+              if (matchedPrefix) {
+                const handler = proxyHandlerMap.get(matchedPrefix);
+                return handler(req, res, next);
+              }
+            }
+            catch (e) {
+              logger.error("代理处理异常: ---testReqMiddle error------------", e);
+            }
+            next();
+          });
+        });
 
-        server.middlewares.use((req, res, next) => {
+        await rsbuild.startDevServer(); */
+        //  const server = await rsbuild.createDevServer();
+
+        /* server.middlewares.use((req, res, next) => {
           console.log("---------------", req.url);
           next();
         });
 
-        const sites = [
-          {
-            proxyPrefix: "/inner",
-            // targetUrl: "http://dev.yearrow.com",
-            targetUrl: "http://10.0.0.2:3013",
-            // targetUrl: "http://192.168.1:8080",
-            // skipPath: ["approve", "approveServer"]
-          },
-          {
-            proxyPrefix: "/*",
-            targetUrl: "http://dev-mc.yearrow.com",
-            skipPath: ["inner"],
-          },
-        ];
-        sites.forEach((item) => {
-          const { proxyPrefix, targetUrl, skipPath } = item;
-          if (skipPath) {
-            const pathFilter = function (pathname: string) {
-              console.log(`pathname = ${pathname}`);
-              let flag = 0;
-              // eslint-disable-next-line array-callback-return
-              skipPath.map((i) => {
-                if (pathname.match(`/${i}/`))
-                  flag++;
-              });
-              console.log("--------!(flag > 0)----------", !(flag > 0));
-              return !(flag > 0);
-            };
-            console.log("00000000000000000000", proxyPrefix);
-            server.middlewares.use("**", createProxyMiddleware({
-              logger: true,
-              pathFilter,
-              target: targetUrl,
-              changeOrigin: true,
-              on: {
-                proxyReq: (proxyReq, req, res) => {
-                  console.log("proxyReq----------");
-                  /* handle proxyReq */
-                },
-                proxyRes: (proxyRes, req, res) => {
-                  /* handle proxyRes */
-                  console.log("proxyRes----------");
-                },
-                error: (err, req, res) => {
-                  /* handle error */
-                  console.log("err----------");
-                },
-              },
-            }));
-          }
-          else {
-            console.log("1111111111111111111111", proxyPrefix);
-            server.middlewares.use(proxyPrefix, createProxyMiddleware({ logger: true, target: targetUrl, changeOrigin: true }));
-          }
+        server.listen(); */
 
-          logger.info(`已代理地址：http://localhost:${server.port}${proxyPrefix}:--->${targetUrl}`);
-        });
+        // await createPackerDevServer(rsbuild);
 
         /* const { proxyPrefix, targetUrl, skipPath } = {
           proxyPrefix: "/inner",
@@ -158,7 +192,7 @@ export class RsbuildCompiler extends BaseCompiler {
           server.middlewares.use(proxyPrefix, createProxyMiddleware({ target: targetUrl, changeOrigin: true }));
         } */
 
-        await server.listen();
+        // await server.listen();
       }
 
       if (rsbuild && context.action === "build") {

@@ -1,0 +1,27 @@
+{
+  "minify": true,
+  "sourceMaps": true,
+  "jsc": {
+    "minify": {
+      "compress": {
+        "unused": true
+      },
+      "mangle": true
+    },
+    "parser": {
+      "syntax": "typescript",
+      "tsx": true,
+      "decorators": true,
+      "dynamicImport": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true
+    }
+  },
+  "env": {
+    "target": "es5",
+    "targets": "> 0.5% and last 2 versions",
+    "coreJs": "3.22"
+  }
+}

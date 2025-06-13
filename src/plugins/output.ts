@@ -28,6 +28,7 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
   return {
     output: {
       target: "web",
+      assetPrefix: "./",
       cleanDistPath: false,
       // polyfill: "entry",
       // copy: _copy,
