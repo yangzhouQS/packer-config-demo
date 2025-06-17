@@ -1,11 +1,11 @@
-import path from "node:path";
 import { RsbuildConfig } from "@rsbuild/core";
 import get from "lodash.get";
 import { formatEntry } from "../helpers/config.helper.ts";
+import { copyFiles } from "../helpers/files-utils.ts";
 import { InternalContext } from "../types/context.ts";
 
 export function packerPluginOutput(context: InternalContext): RsbuildConfig {
-  const _copy: { from: string; to: string }[] = [];
+  // const _copy: { from: string; to: string }[] = [];
   const { config, rootPath } = context;
   const copy = config.global?.copy || {};
 
@@ -18,12 +18,15 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
     externals = get(config, "global.browserVue2.packerConfig.externals", {});
   }
 
-  Object.keys(copy).forEach((key) => {
+  /* Object.keys(copy).forEach((key) => {
     _copy.push({
       from: key,
       to: path.resolve(rootPath, copy[key]),
     });
-  });
+  }); */
+  if (copy && Object.keys(copy).length > 0) {
+    copyFiles(copy, rootPath);
+  }
 
   return {
     output: {
@@ -32,7 +35,7 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
       cleanDistPath: false,
       // polyfill: "entry",
       // copy: _copy,
-      // externals,
+      externals,
       overrideBrowserslist: [
         "> 1%",
         "not ie <= 10",

@@ -66,7 +66,7 @@ module.exports = {
     hmr: false,
     port: 8080,
     staticPath: "dist/",
-    // prefix: "/inner",
+    prefix: "/inner",
     packerConfig: {},
     proxy: {
       isEnable: true,
