@@ -7,78 +7,6 @@ import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
 
-/* const proxyHandlerMap = new Map<string, any>();
-
-function findBestProxyMatch(path = "") {
-  if (proxyHandlerMap.has(path)) {
-    return proxyHandlerMap.get(path) || null;
-  }
-  const prefixes = Array.from(proxyHandlerMap.keys()).sort((a, b) => b.length - a.length);
-  console.log("prefixes = ", prefixes, path);
-  for (const prefix of prefixes) {
-    if (path.startsWith(prefix)) {
-      proxyHandlerMap.set(path, prefix);
-      return prefix;
-    }
-  }
-  proxyHandlerMap.set(path, null);
-  return null;
-}
-
-const sites = [
-  {
-    proxyPrefix: "/inner",
-    // targetUrl: "http://dev.yearrow.com",
-    targetUrl: "http://192.168.178.1:3013",
-    pathRewrite: {
-      "^/inner": "/inner",
-    },
-    // targetUrl: "http://192.168.1:8080",
-    skipPath: [],
-    // skipPath: ["inner", "approveServer"],
-  },
-  {
-    proxyPrefix: "/!*",
-    targetUrl: "http://dev-mc.yearrow.com",
-    skipPath: ["inner"],
-  },
-];
-sites.forEach((item) => {
-  const { proxyPrefix, targetUrl, skipPath, pathRewrite } = item;
-  console.log("skipPath = ", skipPath);
-
-  const filter = skipPath?.length > 0
-    ? (pathname: string) => {
-        return !skipPath.some((path) => {
-          const regex = new RegExp(`^/${path}(?:/|$)`);
-          return regex.test(pathname);
-        });
-      }
-    : undefined;
-
-  const options = {
-    target: targetUrl,
-    changeOrigin: true,
-    pathRewrite,
-    logLevel: console,
-    onProxyReq: (proxyReq: any) => {
-      proxyReq.setHeader("X-Proxied-By", "nest-proxy");
-    },
-  };
-
-  const handler = filter
-    ? createProxyMiddleware({
-        ...options,
-        pathFilter: filter,
-      })
-    : createProxyMiddleware(options);
-
-  console.log("proxyPrefix = ", proxyPrefix, " || ");
-  proxyHandlerMap.set(proxyPrefix, handler);
-
-  logger.info(`已代理地址：http://localhost:${proxyPrefix}:--->${targetUrl}`);
-}); */
-
 export class RsbuildCompiler extends BaseCompiler {
   public async run(
     {
@@ -139,6 +67,7 @@ export class RsbuildCompiler extends BaseCompiler {
 
       logger.debug("context.action = ", context.action);
       if (rsbuild && context.action === "dev" && isWatchEnabled) {
+        // await rsbuild.startDevServer();
         /* rsbuild.onBeforeStartDevServer(({ server }) => {
           server.middlewares.use((req, res, next) => {
             console.log("---onBeforeStartDevServer -- testReqMiddle------------", req.url);
@@ -205,13 +134,11 @@ export class RsbuildCompiler extends BaseCompiler {
       * */
         if (buildInstance) {
           await buildInstance.close();
-          logger.info("------------build website end----------------");
         /* if (isWatchEnabled) {
           onBeforeRestartServer(buildInstance.close);
         }
         else {
           await buildInstance.close();
-          logger.info("------------build website end----------------");
         } */
         }
       }

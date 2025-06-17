@@ -7,7 +7,7 @@
   "license": "ISC",
   "scripts": {
     "pnpm:install": "pnpm install",
-    "start:debug": "nest start --debug --watch -b swc --typeCheck false",
+    "start:debug": "nest start --debug --watch -b swc",
     "dev": "webpages-packer --env development --config packer-config.js  --watch true --include server,login",
     "dev2": "webpages-packer --env development --config packer-config.js  --watch true --include server,permission,product,innerUser,login",
     "devbuild2": "webpages-packer build",
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@cs/nest-auth-client": "^1.0.0-beta.2",
-    "@cs/nest-cloud": "^2.0.0-beta.15",
+    "@cs/nest-cloud": "^2.0.0-beta.16",
     "@cs/nest-common": "^3.0.0-beta.5",
     "@cs/nest-config": "^3.0.0-beta.2",
     "@cs/nest-redis": "^2.0.0-beta.2",

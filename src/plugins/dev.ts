@@ -19,7 +19,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   const progressBar = get(context.config, "server.progressBar", true);
   return {
     dev: {
-      // assetPrefix: "/inner",
+      // assetPrefix: "inner",
       client: {
         overlay: true,
       },
@@ -33,14 +33,14 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
       watchFiles: {
         paths: ["src/web-content/**/*"],
       },
-      setupMiddlewares: [
+      /* setupMiddlewares: [
         (middlewares, devServer) => {
           middlewares.unshift((req, res, next) => {
             // console.log("first", req.url);
             next();
           });
         },
-      ],
+      ], */
     },
   };
 }
