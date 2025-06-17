@@ -68,60 +68,9 @@ export class RsbuildCompiler extends BaseCompiler {
       logger.debug("context.action = ", context.action);
       if (rsbuild && context.action === "dev" && isWatchEnabled) {
         // await rsbuild.startDevServer();
-        /* rsbuild.onBeforeStartDevServer(({ server }) => {
-          server.middlewares.use((req, res, next) => {
-            console.log("---onBeforeStartDevServer -- testReqMiddle------------", req.url);
-            try {
-              const matchedPrefix = findBestProxyMatch(req.url);
-              console.log("matchedPrefix = ", matchedPrefix);
-              if (matchedPrefix) {
-                const handler = proxyHandlerMap.get(matchedPrefix);
-                return handler(req, res, next);
-              }
-            }
-            catch (e) {
-              logger.error("代理处理异常: ---testReqMiddle error------------", e);
-            }
-            next();
-          });
+        await rsbuild.build({
+          watch: isWatchEnabled,
         });
-
-        await rsbuild.startDevServer(); */
-        //  const server = await rsbuild.createDevServer();
-
-        /* server.middlewares.use((req, res, next) => {
-          console.log("---------------", req.url);
-          next();
-        });
-
-        server.listen(); */
-
-        // await createPackerDevServer(rsbuild);
-
-        /* const { proxyPrefix, targetUrl, skipPath } = {
-          proxyPrefix: "/inner",
-          // targetUrl: "http://dev-mc.yearrow.com",
-          targetUrl: "http://10.0.0.2:3013",
-          skipPath: ["inner"],
-        };
-        if (proxyPrefix) {
-          const pathFilter = (pathname: string, req: any) => {
-            console.log(`pathname = ${pathname}`);
-            let flag = 0;
-            // eslint-disable-next-line array-callback-return
-            skipPath.map((i) => {
-              if (pathname.match(`/${i}/`))
-                flag++;
-            });
-            return !(flag > 0);
-          };
-          server.middlewares.use(proxyPrefix, createProxyMiddleware({ pathFilter, target: targetUrl, changeOrigin: true }));
-        }
-        else {
-          server.middlewares.use(proxyPrefix, createProxyMiddleware({ target: targetUrl, changeOrigin: true }));
-        } */
-
-        // await server.listen();
       }
 
       if (rsbuild && context.action === "build") {
