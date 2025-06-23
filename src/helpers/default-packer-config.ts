@@ -5,6 +5,7 @@ import { PackerConfigType } from "../types/config";
  * @type {{global: {clear: any[], copy: {}, browserVue: {rootOutPath: string, packerConfig: {}}, browserVue3: {rootOutPath: string, packerConfig: {}}, library: {rootOutPath: string, packerConfig: {}}, libraryVue3: {rootOutPath: string, packerConfig: {}}, node: {rootOutPath: string, packerConfig: {}}}, server: {port: number, staticPath: string, packerConfig: {}}, entries: {}}}
  */
 export const defaultPackerConfig: PackerConfigType = {
+  configFilePath: "",
   global: {
     // cwd: __dirname,
     clear: [],

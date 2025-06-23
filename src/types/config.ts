@@ -35,8 +35,16 @@ export interface PackerServerConfigType {
   hmr?: boolean;
 }
 
+/**
+ * 配置文件格式化解析读取
+ */
 export interface PackerConfigType {
   [key: string]: any;
+
+  /**
+   * 配置文件路径
+   */
+  configFilePath: string;
   global: {
     cwd?: string;
     clear?: string[];

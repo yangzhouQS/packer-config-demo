@@ -7,16 +7,18 @@ export class ReaderFileLackPermissionsError extends Error {
   }
 }
 export interface FileResultType {
-  fileName: string; content: string
+  fileName: string;
+  filePath: string;
+  content: string;
 }
 export interface Reader {
-  list(): string[];
+  list: () => string[];
 
-  read(name: string): { fileName: string, content: string };
+  read: (name: string) => FileResultType;
 
-  readAnyOf(
+  readAnyOf: (
     filenames: string[],
-  ): FileResultType | undefined | ReaderFileLackPermissionsError;
+  ) => FileResultType | undefined | ReaderFileLackPermissionsError;
 
-  parse<TResult>(name: string): Promise<TResult>;
+  parse: <TResult>(name: string) => Promise<TResult>;
 }

@@ -18,12 +18,8 @@ export default {
     typescript: 'typescript',
   },
   dependencies:[
-    'tinyglobby',
-    {
-      name: 'chokidar',
-      // strip sourcemap comment
-      prettier: true,
-    },
+    // 'tinyglobby',
+    'chokidar',
     {
       name: 'rslog',
       afterBundle(task) {

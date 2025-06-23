@@ -1,10 +1,9 @@
-import {createJiti } from 'jiti';
-import fs from "fs";
+import fs from "node:fs";
 import path from "node:path";
-import {FileResultType, ReaderFileLackPermissionsError} from "./reader";
+import { createJiti } from "jiti";
+import { FileResultType, ReaderFileLackPermissionsError } from "./reader";
 
 export class FileSystemReader {
-
   constructor(private readonly directory: string) {
   }
 
@@ -14,14 +13,15 @@ export class FileSystemReader {
 
   public read(name: string): FileResultType {
     return {
+      filePath: path.resolve(this.directory, name),
       fileName: name,
-      content: fs.readFileSync(path.resolve(this.directory, name), 'utf-8'),
-    }
+      content: fs.readFileSync(path.resolve(this.directory, name), "utf-8"),
+    };
   }
 
   public readAnyOf(
     filenames: string[],
-  ): FileResultType | ReaderFileLackPermissionsError | undefined{
+  ): FileResultType | ReaderFileLackPermissionsError | undefined {
     let firstFilePathFoundButWithInsufficientPermissions: string | undefined;
 
     for (let id = 0; id < filenames.length; id++) {
@@ -29,13 +29,14 @@ export class FileSystemReader {
 
       try {
         return this.read(file);
-      } catch (readErr: any) {
+      }
+      catch (readErr: any) {
         if (
-          !firstFilePathFoundButWithInsufficientPermissions &&
-          typeof readErr?.code === 'string'
+          !firstFilePathFoundButWithInsufficientPermissions
+          && typeof readErr?.code === "string"
         ) {
-          const isInsufficientPermissionsError =
-            readErr.code === 'EACCES' || readErr.code === 'EPERM';
+          const isInsufficientPermissionsError
+            = readErr.code === "EACCES" || readErr.code === "EPERM";
           if (isInsufficientPermissionsError) {
             firstFilePathFoundButWithInsufficientPermissions = readErr.path;
           }
@@ -51,7 +52,8 @@ export class FileSystemReader {
             firstFilePathFoundButWithInsufficientPermissions,
             readErr.code,
           );
-        } else {
+        }
+        else {
           return undefined;
         }
       }
@@ -65,8 +67,8 @@ export class FileSystemReader {
       interopDefault: true,
       // Always use native `require()` for these packages,
       // This avoids `@rspack/core` being loaded twice.
-      nativeModules: ['@rspack/core', 'typescript'],
+      nativeModules: ["@rspack/core", "typescript"],
     });
-    return await jiti.import(path.resolve(this.directory, name), {default: true});
+    return await jiti.import(path.resolve(this.directory, name), { default: true });
   }
 }

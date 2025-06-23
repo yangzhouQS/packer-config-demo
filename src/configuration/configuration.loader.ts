@@ -1,8 +1,8 @@
-import {PackerConfigType} from "../types/config";
-import {Reader, ReaderFileLackPermissionsError} from "./reader";
-import {PACKER_CONFIG_FILES} from "../constants";
-import {logger} from "../logger";
-import {__dirname} from '../constants'
+import process from "node:process";
+import { __dirname, PACKER_CONFIG_FILES } from "../constants";
+import { logger } from "../logger";
+import { PackerConfigType } from "../types/config";
+import { Reader, ReaderFileLackPermissionsError } from "./reader";
 
 const loadedConfigsCache = new Map<string, Required<PackerConfigType>>();
 
@@ -28,17 +28,20 @@ export class ConfigurationLoader {
       : this.reader.readAnyOf(PACKER_CONFIG_FILES);
 
     // 如果读取成功, 使用jiti解析读取
-    if (contentOrError){
+    if (contentOrError) {
       const isMissingPermissionsError = contentOrError instanceof ReaderFileLackPermissionsError;
       if (isMissingPermissionsError) {
         console.error(contentOrError.message);
         process.exit(1);
       }
 
-      if (contentOrError?.fileName){
+      if (contentOrError?.fileName) {
         loadedConfig = await this.reader.parse<PackerConfigType>(contentOrError.fileName);
+
+        loadedConfig.configFilePath = contentOrError.filePath;
       }
-    } else {
+    }
+    else {
       logger.error(`No configuration file found in ${__dirname} read packer-config.js`);
       process.exit(1);
     }

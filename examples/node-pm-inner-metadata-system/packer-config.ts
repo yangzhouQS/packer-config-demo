@@ -1,3 +1,4 @@
+console.log('assaas');
 module.exports = {
   global: {
     cwd: __dirname,
@@ -63,8 +64,9 @@ module.exports = {
     },
   },
   server: {
-    hmr: false,
+    hmr: true,
     port: 8080,
+    reloadType: 'reload-server',
     staticPath: "dist/",
     prefix: "/inner",
     packerConfig: {},
@@ -100,6 +102,7 @@ module.exports = {
       title: "支撑系统登录页",
       input: "src/web-content/module/login/index.ts",
     },
+    /*
     index: {
       type: "browserVue3",
       title: "协同管理 | 主页",
@@ -119,6 +122,6 @@ module.exports = {
       type: "browserVue3",
       title: "后台用户管理",
       input: "src/web-content/module/inner-user/main.ts",
-    },
+    },*/
   },
 };

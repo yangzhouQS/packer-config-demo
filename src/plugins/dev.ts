@@ -16,6 +16,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   logger.debug("--------------packerPluginDev------------------");
 
   const hmr = get(context.config, "server.hmr", true);
+  const reloadType = get(context.config, "server.reloadType", "reload-page");
   const progressBar = get(context.config, "server.progressBar", true);
   return {
     dev: {
@@ -31,6 +32,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
         imports: true,
       },
       watchFiles: {
+        type: reloadType,
         paths: ["src/web-content/**/*"],
       },
       /* setupMiddlewares: [

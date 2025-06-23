@@ -21,3 +21,9 @@ export async function interopDefault<T>(m: Awaitable<T>): Promise<T extends { de
   const resolved = await m;
   return (resolved as any).default || resolved;
 }
+export function castArray<T>(arr?: T | T[]): T[] {
+  if (arr === undefined) {
+    return [];
+  }
+  return Array.isArray(arr) ? arr : [arr];
+}
