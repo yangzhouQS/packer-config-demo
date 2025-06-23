@@ -8,8 +8,7 @@
   "scripts": {
     "pnpm:install": "pnpm install",
     "start:debug": "nest start --debug --watch -b swc",
-    "dev": "webpages-packer --env development --config packer-config.ts  --watch true --include server,permission,product,innerUser,login",
-    "dev2": "webpages-packer --env development  --config packer-config.ts --watch true --include server,permission,product,innerUser,login",
+    "dev": "webpages-packer --env development --config packer-config.ts --watch true --include server,permission,product,innerUser,login",
     "devbuild2": "webpages-packer build",
     "build": "nest build && webpages-packer --env production --config packer-config.ts",
     "start": "node ./dist/controllers/main.js",
@@ -42,7 +41,7 @@
     "@cs/element-yearrow-theme": "^1.0.13",
     "@cs/js-inner-web-framework": "^0.2.0",
     "@cs/webpages-packer": "workspace:*",
-    "@cs/webpages-packer-browser-vue3": "^2.1.5",
+    "@cs/webpages-packer-browser-vue3": "3.0.0-beta.4",
     "@cs/webpages-packer-node": "^2.1.0",
     "@element-plus/icons-vue": "^2.3.1",
     "@types/lodash": "^4.17.16",
