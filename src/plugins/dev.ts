@@ -19,7 +19,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   const hmr = get(context.config, "server.hmr", true);
   const reloadType = get(context.config, "server.reloadType", "reload-page");
   const progressBar = get(context.config, "server.progressBar", true);
-  const webContentPath = resolve(context.rootPath, "src/web-content/**/*");
+  const webContentPath = resolve(context.rootPath, "src/web-content");
   return {
     dev: {
       // assetPrefix: "inner",
