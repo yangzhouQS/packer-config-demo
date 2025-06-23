@@ -2,6 +2,7 @@ import path from "node:path";
 import { RsbuildConfig } from "@rsbuild/core";
 import get from "lodash.get";
 import { formatEntry } from "../helpers/config.helper.ts";
+import { copyFiles } from "../helpers/files-utils.ts";
 import { InternalContext } from "../types/context.ts";
 
 export function packerPluginOutput(context: InternalContext): RsbuildConfig {
@@ -24,9 +25,9 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
       to: path.resolve(rootPath, copy[key]),
     });
   });
-  /* if (copy && Object.keys(copy).length > 0) {
+  if (copy && Object.keys(copy).length > 0) {
     copyFiles(copy, rootPath);
-  } */
+  }
 
   return {
     output: {
@@ -34,7 +35,7 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
       assetPrefix: "./",
       cleanDistPath: false,
       // polyfill: "entry",
-      copy: _copy,
+      // copy: _copy,
       externals,
       overrideBrowserslist: [
         "> 1%",

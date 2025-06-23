@@ -1,4 +1,3 @@
-import { resolve } from "node:path";
 import { RsbuildConfig } from "@rsbuild/core";
 import get from "lodash.get";
 import { logger } from "../logger.ts";
@@ -17,9 +16,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
   logger.debug("--------------packerPluginDev------------------");
 
   const hmr = get(context.config, "server.hmr", true);
-  const reloadType = get(context.config, "server.reloadType", "reload-page");
   const progressBar = get(context.config, "server.progressBar", true);
-  const webContentPath = resolve(context.rootPath, "src/web-content");
   return {
     dev: {
       // assetPrefix: "inner",
@@ -34,8 +31,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
         imports: true,
       },
       watchFiles: {
-        type: reloadType,
-        paths: [webContentPath, "src/web-content/**/*", `${webContentPath}//**/*`],
+        paths: ["src/web-content/**/*"],
       },
       /* setupMiddlewares: [
         (middlewares, devServer) => {
