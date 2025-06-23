@@ -60,6 +60,7 @@ export async function restartDevServer({
   filePath?: string;
   clear?: boolean;
 } = {}): Promise<boolean> {
+  console.log("-----restartDevServer---");
   await beforeRestart({ filePath, clear, id: "server" });
 
   // Skip the following logic if restart failed,
@@ -105,9 +106,11 @@ export async function watchFilesForRestart({
   isBuildWatch: boolean;
   watchOptions?: ChokidarOptions;
 }): Promise<void> {
+  console.log("0000000000000000000-----watchFilesForRestart files = ", files);
   if (!files.length) {
     return;
   }
+  files = Array.from(new Set(files));
 
   const chokidar = await import("chokidar");
 
@@ -140,6 +143,7 @@ export async function watchFilesForRestart({
       );
     }
 
+    console.log(`----------------------------- restarting = ${restarting}`);
     restarting = false;
   };
 

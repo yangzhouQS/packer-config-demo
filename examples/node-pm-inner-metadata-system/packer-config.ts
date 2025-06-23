@@ -1,4 +1,4 @@
-console.log('1111');
+console.log('配置文件 1222');
 module.exports = {
   global: {
     cwd: __dirname,
@@ -66,7 +66,7 @@ module.exports = {
   server: {
     hmr: true,
     port: 8080,
-    reloadType: 'reload-server',
+    // reloadType: 'reload-server',
     staticPath: "dist/",
     prefix: "/inner",
     packerConfig: {},

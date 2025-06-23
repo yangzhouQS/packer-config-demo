@@ -1,13 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { createRsbuild, loadEnv, RsbuildInstance } from "@rsbuild/core";
+import { createRsbuild, RsbuildInstance } from "@rsbuild/core";
 import get from "lodash.get";
-import { castArray, getNodeEnv } from "../helpers";
 import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile";
 import { BaseCompiler } from "./base.compiler";
-import { onBeforeRestartServer, watchFilesForRestart } from "./rsbuild-restart.ts";
 
 export class RsbuildCompiler extends BaseCompiler {
   public async run(
@@ -28,10 +26,10 @@ export class RsbuildCompiler extends BaseCompiler {
       );
     }
 
-    const envs = loadEnv({
+    /* const envs = loadEnv({
       cwd: context.rootPath,
       mode: getNodeEnv(),
-    });
+    }); */
 
     const entry = get(rsbuildConfig, "source.entry", {});
     if (Object.keys(entry).length === 0) {
@@ -39,8 +37,7 @@ export class RsbuildCompiler extends BaseCompiler {
       return;
     }
 
-    const watchFiles = [configuration.configFilePath, ...envs.filePaths];
-    console.log("watchFiles: ", watchFiles);
+    const watchFiles = [configuration.configFilePath/* ...envs.filePaths */];
     const watchModeOption = extras.inputs.find(
       option => option.name === "watch",
     );
@@ -50,11 +47,15 @@ export class RsbuildCompiler extends BaseCompiler {
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
 
-    onBeforeRestartServer(envs.cleanup);
+    console.log(`isBuildWatch = ${isBuildWatch}, isWatchEnabled = ${isWatchEnabled}`);
 
+    // 打包器配置文件监听
+    // onBeforeRestartServer(envs.cleanup);
+
+    console.log("rsbuildConfig-->", rsbuildConfig);
     // eslint-disable-next-line no-useless-catch
     try {
-    // const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
+      // const afterCallback = createAfterCallback(onSuccess, isWatchEnabled);
       const rsbuild: RsbuildInstance = await createRsbuild({
         cwd,
         callerName: "webpages-packer-cli",
@@ -63,39 +64,50 @@ export class RsbuildCompiler extends BaseCompiler {
       });
 
       logger.debug("context.action = ", context.action);
-      /* if (rsbuild && context.action === "dev" && isWatchEnabled) {
-        if (isWatchEnabled) {
-          watchFilesForRestart({
 
-          })
-        }
-        else {
-          await rsbuild.startDevServer();
-        }
+      console.log("-------watchFiles -------------", watchFiles);
+
+      if (rsbuild && rsbuild.context.action === "dev") {
+        console.log("rsbuild");
+        await rsbuild.startDevServer();
+      }
+      /* if (isWatchEnabled || isBuildWatch) {
+        // 配置文件修改后重新启动
+        watchFilesForRestart({
+          files: watchFiles,
+          rsbuild,
+          isBuildWatch,
+        });
       } */
+
+      rsbuild.onBeforeCreateCompiler(() => {
+        console.log("----------onBeforeCreateCompiler-----------");
+      });
 
       /*
         * onBeforeCreateCompiler 是在创建底层 Compiler 实例前触发的回调函数，
         * 当你执行 rsbuild.startDevServer、rsbuild.build 或 rsbuild.createCompiler 时，都会调用此钩子。
         * */
-      rsbuild.onBeforeCreateCompiler(() => {
+      /* rsbuild.onBeforeCreateCompiler(() => {
         // Skip watching files when not in dev mode or not in build watch mode
-        /* if (rsbuild.context.action !== "dev" && !isBuildWatch) {
+        /!* if (rsbuild.context.action !== "dev" && !isBuildWatch) {
           // pass
-        } */
+        } *!/
 
         const files: string[] = [];
         const config = rsbuild.getNormalizedConfig();
+        console.log("-------config.dev?.watchFiles--->", config.dev?.watchFiles);
         if (config.dev?.watchFiles) {
           for (const watchFilesConfig of castArray(config.dev.watchFiles)) {
-            if (watchFilesConfig.type !== "reload-server") {
+            /!* if (watchFilesConfig.type !== "reload-server") {
               continue;
-            }
+            } *!/
+
+            console.log("isBuildWatch : 打包及其监听文件修改");
 
             const paths = castArray(watchFilesConfig.paths);
             paths.push(...watchFiles);
-            console.log("watchFilesConfig:", watchFilesConfig);
-            if (watchFilesConfig.options) {
+            if (isBuildWatch && watchFilesConfig.options) {
               // pass 先不考虑监听参数传递
               watchFilesForRestart({
                 files: paths,
@@ -110,12 +122,14 @@ export class RsbuildCompiler extends BaseCompiler {
           }
         }
 
-        watchFilesForRestart({
-          files,
-          rsbuild,
-          isBuildWatch,
-        });
-      });
+        /!* if (rsbuild && rsbuild.context.action === "dev") {
+          watchFilesForRestart({
+            files,
+            rsbuild,
+            isBuildWatch,
+          });
+        } *!/
+      }); */
 
       if (rsbuild && context.action === "build") {
         const buildInstance = await rsbuild.build({

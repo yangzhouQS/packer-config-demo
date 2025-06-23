@@ -35,7 +35,7 @@ export function packerPluginDev(context: InternalContext): RsbuildConfig {
       },
       watchFiles: {
         type: reloadType,
-        paths: [webContentPath],
+        paths: [webContentPath, "src/web-content/**/*", `${webContentPath}//**/*`],
       },
       /* setupMiddlewares: [
         (middlewares, devServer) => {

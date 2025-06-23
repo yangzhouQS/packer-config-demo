@@ -9,8 +9,8 @@
     "pnpm:install": "pnpm install",
     "start:debug": "nest start --debug --watch -b swc",
     "dev": "webpages-packer --env development --config packer-config.ts  --watch true --include server,permission,product,innerUser,login",
-    "dev2": "webpages-packer --env development /*--config packer-config.ts  */--watch true --include server,permission,product,innerUser,login",
-    "devbuild2": "webpages-packer build -w",
+    "dev2": "webpages-packer --env development  --config packer-config.ts --watch true --include server,permission,product,innerUser,login",
+    "devbuild2": "webpages-packer build",
     "build": "nest build && webpages-packer --env production --config packer-config.ts",
     "start": "node ./dist/controllers/main.js",
     "lint": "eslint",
@@ -34,7 +34,8 @@
     "svg-captcha": "^1.4.0",
     "axios": "^1.9.0",
     "dayjs": "^1.11.13",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "typeorm": "0.3.20"
   },
   "devDependencies": {
     "@cs/element-pro": "^1.7.8",
