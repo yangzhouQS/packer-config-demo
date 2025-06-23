@@ -1,4 +1,4 @@
-console.log('assaas');
+console.log('1111');
 module.exports = {
   global: {
     cwd: __dirname,
