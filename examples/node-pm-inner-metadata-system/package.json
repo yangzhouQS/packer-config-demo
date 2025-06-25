@@ -8,8 +8,9 @@
   "scripts": {
     "pnpm:install": "pnpm install",
     "start:debug": "nest start --debug --watch -b swc",
-    "dev": "webpages-packer --env development --config packer-config.ts --watch true --include server,permission,product,innerUser,login",
+    "dev": "webpages-packer --env development --config packer-config.ts --watch true --include permission,product,innerUser,login",
     "devbuild2": "webpages-packer build",
+    "build:server": "webpages-packer build",
     "build": "nest build && webpages-packer --env production --config packer-config.ts",
     "start": "node ./dist/controllers/main.js",
     "lint": "eslint",
@@ -48,6 +49,7 @@
     "@types/node": "^22.13.14",
     "css-loader": "^7.1.2",
     "element-plus": "^2.9.7",
+    "proxy-agent": "6.5.0",
     "less-loader": "^12.2.0",
     "pinia": "^3.0.1",
     "postcss-loader": "^8.1.1",

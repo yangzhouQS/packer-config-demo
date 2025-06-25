@@ -94,3 +94,14 @@ export interface GeneratePackResultType {
 
   [key: string]: any;
 }
+
+export type Format = "esm" | "cjs" | "umd" | "mf";
+
+export interface PkgJson {
+  name: string;
+  type?: "module" | "commonjs";
+  dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  optionalDependencies?: Record<string, string>;
+}

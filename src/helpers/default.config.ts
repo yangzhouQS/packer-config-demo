@@ -187,6 +187,7 @@ lazyImports.forEach((lazyImport) => {
   );
 });
 
+export const getIgnorePlugin = () => _ignorePlugin;
 /**
  *
  * @type {{context: any, mode: string, target: string, optimization: {minimize: boolean, nodeEnv: boolean}, node: {__dirname: boolean, __filename: boolean}, plugins: any[], watchOptions: {ignored: RegExp}, resolve: {extensions: string[], tsConfig: string}, experiments: {lazyCompilation: {entries: boolean, imports: boolean}}, entry: {}, output: {path: string, filename: string}, externals: any[], externalsPresets: {node: boolean}, module: {rules: {test: RegExp, use: {loader: string, options: {transpileOnly: boolean}}[], exclude: RegExp}[]}, devServer: {host: string, port: number}}}

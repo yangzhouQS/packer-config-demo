@@ -13,6 +13,7 @@ interface RsbuildCompilerExtras {
 export interface RunRsbuildCompilerArgOptions<T = RsbuildCompilerExtras> {
   configuration: PackerConfigType;
   rsbuildConfig?: RsbuildConfig;
+  rsbuildServerConfig?: RsbuildConfig;
   rspackConfig?: RspackOptions; // | MultiRspackOptions;
   context: InternalContext;
   tsConfigPath?: string;

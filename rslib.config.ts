@@ -92,9 +92,4 @@ export default defineConfig({
       },
     },
   ],
-  /* tools: {
-    rspack: {
-      externals: commonExternals,
-    },
-  }, */
 });

@@ -2,7 +2,6 @@ import path from "node:path";
 import { RsbuildConfig } from "@rsbuild/core";
 import get from "lodash.get";
 import { formatEntry } from "../helpers/config.helper.ts";
-import { copyFiles } from "../helpers/files-utils.ts";
 import { InternalContext } from "../types/context.ts";
 
 export function packerPluginOutput(context: InternalContext): RsbuildConfig {
@@ -26,7 +25,7 @@ export function packerPluginOutput(context: InternalContext): RsbuildConfig {
     });
   });
   if (copy && Object.keys(copy).length > 0) {
-    copyFiles(copy, rootPath);
+    // copyFiles(copy, rootPath);
   }
 
   return {

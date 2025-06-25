@@ -3,8 +3,8 @@ import process from "node:process";
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
 import { Input } from "../commands/command.input";
+import { RsbuildServerCompiler } from "../compiler/rsbuild-server.compiler.ts";
 import { RsbuildCompiler } from "../compiler/rsbuild.compiler.ts";
-import { RspackCompiler } from "../compiler/rspack.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
 import { PACKER_NAME, RSPACK_BUILD_ERROR } from "../constants.ts";
@@ -15,7 +15,7 @@ import { createOnSuccessHook } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { packerPluginDev } from "../plugins/dev.ts";
 import { packerPluginHtml } from "../plugins/html.ts";
-import { packerServicePlugin } from "../plugins/node-service.ts";
+import { packerServicePlugin, rsbuildServerPlugin } from "../plugins/node-service.ts";
 import { packerPluginOutput } from "../plugins/output.ts";
 import { packerPluginResolve } from "../plugins/resolve.ts";
 import { packerPluginServer } from "../plugins/server.ts";
@@ -77,6 +77,8 @@ export class BuildAction extends AbstractAction {
 
     const rspackConfig = await this.createRspackConfig(context);
 
+    const rsbuildServerConfig = await this.createRsbuildServerConfig(context);
+
     // 解析出站点和服务打包的配置
     logger.debug("--------runBuild-------------configuration");
 
@@ -86,6 +88,7 @@ export class BuildAction extends AbstractAction {
       configuration,
       rsbuildConfig,
       rspackConfig,
+      rsbuildServerConfig,
       context,
       extras: {
         inputs: commandOptions,
@@ -113,8 +116,11 @@ export class BuildAction extends AbstractAction {
 
     /* 构建服务模块 */
     try {
-      const rsPackCompiler = new RspackCompiler();
-      await rsPackCompiler.run(buildParams);
+      // const rsPackCompiler = new RspackCompiler();
+      // await rsPackCompiler.run(buildParams);
+      console.log("-------构建服务模块-------222-");
+      const serverCompiler = new RsbuildServerCompiler();
+      await serverCompiler.run(buildParams);
     }
     catch (err) {
       const isRspackError = err instanceof Error && err.message === RSPACK_BUILD_ERROR;
@@ -155,6 +161,10 @@ export class BuildAction extends AbstractAction {
    */
   async createRspackConfig(context: InternalContext) {
     return packerServicePlugin(context);
+  }
+
+  async createRsbuildServerConfig(context: InternalContext) {
+    return await rsbuildServerPlugin(context);
   }
 
   createBuildCallback(context: InternalContext) {
