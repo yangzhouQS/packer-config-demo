@@ -1,4 +1,3 @@
-console.log('配置文件 1222');
 module.exports = {
   global: {
     cwd: __dirname,

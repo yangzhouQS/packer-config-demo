@@ -2,7 +2,7 @@ import type { Minify } from "@rsbuild/core";
 import type { Configuration } from "@rspack/core";
 import { defineConfig } from "@rslib/core";
 import pkgJson from "./package.json";
-import prebundleConfig from "./prebundle.config";
+import prebundleConfig from "./prebundle.config.mjs";
 
 const define = {
   PACKER_VERSION: JSON.stringify(pkgJson.version),
@@ -69,6 +69,10 @@ export const nodeMinifyConfig: Minify = {
 export default defineConfig({
   source: {
     define,
+    entry: {
+      "index": "./src/index.ts",
+      "webpages-server": "./src/webpages-server.ts",
+    },
   },
   output: {
     externals,

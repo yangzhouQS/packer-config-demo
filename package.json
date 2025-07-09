@@ -13,19 +13,24 @@
   "bin": {
     "packer": "./bin/webpages-packer.js",
     "webpages-packer": "./bin/webpages-packer.js",
-    "webpages-server": "./bin/webpages-packer.js"
+    "webpages-server": "./bin/webpages-server.js"
   },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "files": [
     "dist",
-    "src"
+    "src",
+    "bin",
+    "package.json",
+    "README.md"
   ],
   "scripts": {
     "build": "rslib build",
     "dev:watch": "rslib build --watch",
     "lint": "eslint .",
     "test": "vitest run",
+    "trash-cli": "trash node_modules",
+    "ri": "rimraf node_modules",
     "pnpm:install": "pnpm i",
     "publish:beta": "npm publish --tag=beta",
     "publish:latest": "npm publish",

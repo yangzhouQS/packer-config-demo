@@ -1,0 +1,62 @@
+application:
+  name: 'node-pm-inner-metadata-system'
+  port: 3013
+  serverPath: inner
+  profiles.active: 'dev-mc,local'
+  naming: false
+profiles.local:
+  logger:
+    level: 'info'
+#  mysql:
+#    flowDB:
+#      type: 'mysql'
+#      host: '127.0.0.1'
+#      port: 3306
+#      username: 'root'
+#      password: 'root'
+#      database: 'mc_pf_flow'
+#      synchronize: false
+#      timeout: 10000
+#      logging: true
+#      timezone: '+08:00'
+#  mysql:
+#    metadata:
+#      type: 'mysql'
+#      host: '127.0.0.1'
+#      port: 3306
+#      username: 'root'
+#      password: 'root'
+#      database: 'test'
+#      synchronize: false
+#      timeout: 10000
+#      logging: true
+  mysql:
+    metadata:
+      type: 'mysql'
+      host: 'dev-mysql.yearrow.com'
+      port: 3306
+      username: 'yearrow-dev'
+      password: 'ClYkyo97iA'
+      database: 'mc_pf_ipm'
+      synchronize: false
+      timeout: 10000
+      logging: true
+  proxy:
+    enable: true
+    sites:
+      - proxyPrefix: '/'
+        targetUrl: 'http://dev-mc.yearrow.com'
+        secure: false
+        skipPath:
+          - 'inner'
+  auth:
+    authServerUrl: 'http://192.168.178.1:3013/inner'
+    authLogoutUrl: 'http://192.168.178.1:3013/inner'
+
+#    正式环境redis测试
+#  redis:
+#    host: 'r-2zeq8pk0ocjmr18qk4.redis.rds.aliyuncs.com'
+#    port: 6379
+#    db: 8
+#    username: yearrow_online_root
+#    password: ylkj@!qwe123##

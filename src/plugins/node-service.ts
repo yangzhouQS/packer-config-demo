@@ -24,6 +24,7 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
     path: "",
     filename: "[name].js",
   };
+  console.log(nodeEntries);
   if (nodeEntries.length > 0 && isServerBuild) {
     const serverConfig = nodeEntries[0];
     const inputPath = path.resolve(context.rootPath, serverConfig.input);
@@ -70,6 +71,8 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
     // pass
   }
 
+  console.log("rspackConfiguration--");
+  console.log(rspackConfiguration);
   return webpackMerge(DEFAULT_RSPACK_CONFIG, rspackConfiguration);
 }
 

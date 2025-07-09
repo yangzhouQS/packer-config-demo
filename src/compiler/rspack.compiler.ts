@@ -3,7 +3,6 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { rspack, ValidationError } from "@rspack/core";
-
 import get from "lodash.get";
 import { createAfterCallback } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";

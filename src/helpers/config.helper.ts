@@ -69,7 +69,7 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
       process.exit(1);
     }
 
-    if (entry.type === "node" && buildIncludes.includes(key)) {
+    if (entry.type === "node"/* && buildIncludes.includes(key) */) {
       if (typeof entry.output === "object") {
         const fileName = entry.output?.fileName || "main.js";
         const filePath = entry.output?.filePath || "dist";
