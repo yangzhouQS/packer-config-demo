@@ -132,6 +132,7 @@ function spawnChildProcess(
   }
   processArgs.unshift("--enable-source-maps");
 
+  console.log("-----processArgs----", processArgs);
   // 创建一个子进程来运行编译后的文件
   return spawn(binaryToRun, processArgs, {
     stdio: "inherit",

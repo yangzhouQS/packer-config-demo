@@ -22,6 +22,7 @@ export interface PackerEntryItemType {
     fileName?: string;
     filePath?: string;
   };
+  sourceRoot: string;
 }
 export interface PackerEntriesType {
   [key: string]: PackerEntryItemType;

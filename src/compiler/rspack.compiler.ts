@@ -5,6 +5,7 @@ import process from "node:process";
 import { loadEnv } from "@rsbuild/core";
 import { rspack, ValidationError } from "@rspack/core";
 import get from "lodash.get";
+import { getEntryFileSourceRoot } from "../helpers/config.helper.ts";
 import { createAfterCallback } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
@@ -22,7 +23,6 @@ export class RspackCompiler extends BaseCompiler {
       onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ) {
-    console.log(rspackConfig);
     const cwd = context.rootPath || process.cwd();
 
     const envs = loadEnv({
@@ -31,7 +31,12 @@ export class RspackCompiler extends BaseCompiler {
 
     // 清除环境变量
     onBeforeRestart(envs.cleanup);
-    const entryFiles = ["H:\\2026code\\demo\\doc-rspack\\packer-config-demo\\examples\\node-pm-inner-metadata-system\\src\\controllers"];
+
+    const entryFiles = [];
+
+    if (rspackConfig?.entry) {
+      entryFiles.push(...getEntryFileSourceRoot(rspackConfig.entry));
+    }
 
     // 监听配置文件和环境变量文件的修改
     const watchFiles = [configuration.configFilePath, ...entryFiles, ...envs.filePaths];

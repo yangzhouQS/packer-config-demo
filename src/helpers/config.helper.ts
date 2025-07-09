@@ -1,4 +1,7 @@
+import path from "node:path";
 import process from "node:process";
+import { EntryObject, EntryStatic } from "@rspack/core";
+import fse from "fs-extra";
 import get from "lodash.get";
 import { logger } from "../logger.ts";
 import { GeneratePackResultType, PackerEntryItemType } from "../types/config.ts";
@@ -62,6 +65,7 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
       title: entry.title || key,
       type: entry.type,
       entryKey: key,
+      sourceRoot: "",
     };
 
     if (!["browserVue3", "browserVue2", "node"].includes(entry.type)) {
@@ -84,6 +88,14 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
           filePath: "dist",
         };
       }
+
+      const absPath = path.join(context.rootPath, entry.input);
+      if (!fse.existsSync(absPath)) {
+        logger.error(`[${PACKER_NAME}] entries.${key}.input 输入文件路径不存在: ${absPath}`);
+        process.exit(1);
+      }
+      entryConfig.sourceRoot = path.dirname(absPath);
+
       Object.assign(entryConfig, { output: entry.output });
       configResult.nodeEntries.push(entryConfig);
       configResult.isServerBuild = true;
@@ -106,4 +118,21 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
   entryFormatMap.set(uuid, configResult);
 
   return configResult;
+}
+
+export function getEntryFileSourceRoot(entry?: EntryObject | string | string[] | (() => (EntryStatic | Promise<EntryStatic>))): string[] {
+  if (!entry) {
+    return [];
+  }
+  if (typeof entry !== "object") {
+    return [];
+  }
+  const sourceRoot = [];
+  for (const [, inputPath] of Object.entries(entry)) {
+    if (typeof inputPath === "string") {
+      const dirName = path.dirname(inputPath);
+      sourceRoot.push(dirName);
+    }
+  }
+  return sourceRoot;
 }

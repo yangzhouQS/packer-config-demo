@@ -84,7 +84,6 @@ export class ServerBuildAction extends AbstractAction {
 
     /* 构建服务模块 */
     try {
-      console.log("-------构建服务模块-------222-");
       const rsPackCompiler = new RspackCompiler();
       await rsPackCompiler.run(buildParams);
     }
