@@ -205,7 +205,7 @@ export const DEFAULT_RSPACK_CONFIG: RspackOptions = {
     __dirname: false,
     __filename: false,
   },
-  devtool: isProduction ? false : "source-map",
+  devtool: /* isProduction ? false : */"source-map",
   plugins: [
     new rspack.ProgressPlugin(),
     ..._ignorePlugin,

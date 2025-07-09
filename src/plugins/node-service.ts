@@ -11,7 +11,6 @@ import { formatEntry } from "../helpers/config.helper.ts";
 import { DEFAULT_RSPACK_CONFIG, getIgnorePlugin } from "../helpers/default.config.ts";
 import { logger } from "../logger.ts";
 import { InternalContext } from "../types/context.ts";
-import { createConstantRsbuildConfig } from "./config/server-build.config.ts";
 /**
  * 创建服务端打包配置
  * @param {InternalContext} context
@@ -24,7 +23,6 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
     path: "",
     filename: "[name].js",
   };
-  console.log(nodeEntries);
   if (nodeEntries.length > 0 && isServerBuild) {
     const serverConfig = nodeEntries[0];
     const inputPath = path.resolve(context.rootPath, serverConfig.input);
@@ -66,13 +64,16 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
       rules: [
       ],
     },
+    devServer: {
+      watchFiles: {
+        paths: ["src/"],
+      },
+    },
   };
   if (context.action === "build") {
     // pass
   }
 
-  console.log("rspackConfiguration--");
-  console.log(rspackConfiguration);
   return webpackMerge(DEFAULT_RSPACK_CONFIG, rspackConfiguration);
 }
 
@@ -97,12 +98,8 @@ export async function rsbuildServerPlugin(context: InternalContext): Promise<Rsb
   }
   const externals = get(context.config, "global.node.packerConfig.externals", []);
   const ignoreWarnings = get(context.config, "global.node.packerConfig.ignoreWarnings", []);
-  const _rsbuildConfig = get(context.config, "global.node.packerConfig._rsbuildConfig", {});
+  const _rsbuildConfig = get(context.config, "global.node.packerConfig.rsbuildConfig", {});
 
-  const constantRsbuildConfig = await createConstantRsbuildConfig();
-
-  console.log("entryConfig --- ");
-  console.log(entryConfig);
   const config = {
     mode: process.env.NODE_ENV || "none",
     root: context.rootPath || process.cwd(),
@@ -120,6 +117,12 @@ export async function rsbuildServerPlugin(context: InternalContext): Promise<Rsb
         enable: true,
         keep: [/dist\/cofnig.yaml/],
       },
+    },
+    watch: true,
+    watchOptions: {
+      ignored: ["**/files/**/*.js", "**/.git", "**/node_modules", "**/log/", "**/dist/**", "**/lib/**"],
+      aggregateTimeout: 200,
+      poll: 2000,
     },
     dev: {},
     server: {},
@@ -174,33 +177,10 @@ export async function rsbuildServerPlugin(context: InternalContext): Promise<Rsb
         },
       },
     },
-    environments: {
-      cjs: mergeRsbuildConfig({
-        dev: {
-          progressBar: true,
-        },
-        performance: {
-          chunkSplit: {
-            strategy: "custom",
-          },
-        },
-        tools: {
-
-        },
-        output: {
-        },
-        plugins: [],
-        source: {
-          decorators: {
-            version: "legacy",
-          },
-          define: {
-            PACKER_VERSION: "\"4.0.1-beta.1\"",
-            PACKER_NAME: "\"@cs/webpages-packer\"",
-          },
-          entry: entryConfig,
-        },
-      }, constantRsbuildConfig),
+    devServer: {
+      watchFiles: {
+        paths: ["src/"],
+      },
     },
   } as RsbuildConfig;
 

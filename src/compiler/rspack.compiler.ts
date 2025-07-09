@@ -58,9 +58,9 @@ export class RspackCompiler extends BaseCompiler {
         process.exit(2);
       }
       else if (e instanceof Error) {
-        /* if (typeof callback === "function") {
-          callback(e);
-        } */
+        if (typeof afterCallback === "function") {
+          afterCallback(e);
+        }
         logger.error(e);
       }
       throw e;
@@ -86,6 +86,7 @@ export class RspackCompiler extends BaseCompiler {
     if (compiler && isWatchEnabled) {
       compiler.hooks.watchRun.tapAsync(`${PACKER_NAME} info`, (params, callback) => {
         logger.success(`Success Packer is building your sources...\n`);
+        console.log(callback);
         callback();
       });
       compiler.watch({}, afterCallback);
