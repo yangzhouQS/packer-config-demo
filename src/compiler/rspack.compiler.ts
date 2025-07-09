@@ -85,11 +85,10 @@ export class RspackCompiler extends BaseCompiler {
 
     if (compiler && isWatchEnabled) {
       compiler.hooks.watchRun.tapAsync(`${PACKER_NAME} info`, (params, callback) => {
-        logger.success(`Success Packer is building your sources...\n`);
-        console.log(callback);
+        logger.success(`\nSuccess Packer is building your sources...\n`);
         callback();
       });
-      compiler.watch({}, afterCallback);
+      compiler.watch(rspackConfig!.watchOptions! || {}, afterCallback);
     }
     else if (compiler) {
       compiler.run(afterCallback);

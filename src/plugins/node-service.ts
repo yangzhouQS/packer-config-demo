@@ -69,6 +69,12 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
         paths: ["src/"],
       },
     },
+    watch: true,
+    watchOptions: {
+      ignored: ["**/files/**/*.js", "**/.git", "**/node_modules", "**/log/", "**/dist/**", "**/lib/**"],
+      aggregateTimeout: 200,
+      poll: 2000,
+    },
   };
   if (context.action === "build") {
     // pass
@@ -118,12 +124,7 @@ export async function rsbuildServerPlugin(context: InternalContext): Promise<Rsb
         keep: [/dist\/cofnig.yaml/],
       },
     },
-    watch: true,
-    watchOptions: {
-      ignored: ["**/files/**/*.js", "**/.git", "**/node_modules", "**/log/", "**/dist/**", "**/lib/**"],
-      aggregateTimeout: 200,
-      poll: 2000,
-    },
+
     dev: {},
     server: {},
     tools: {
