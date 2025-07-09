@@ -29,6 +29,11 @@ export class RspackCompiler extends BaseCompiler {
       cwd,
     });
 
+    if (!rspackConfig) {
+      logger.error(`Packer is building your fail..., 服务构建失败.....,请检查配置文件\n`);
+      process.exit(2);
+    }
+
     // 清除环境变量
     onBeforeRestart(envs.cleanup);
 
@@ -73,7 +78,7 @@ export class RspackCompiler extends BaseCompiler {
     const cliBuild = async () => {
       try {
         // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
-        compiler = rspack(rspackConfig!, undefined);
+        compiler = rspack(rspackConfig, undefined);
 
         if (isWatchEnabled) {
           // onBeforeRestart(compiler!.close);

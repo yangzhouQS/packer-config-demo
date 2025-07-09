@@ -20,7 +20,7 @@ export async function createContext(configuration: PackerConfigType, options: In
     uuid: Date.now(),
     version: PACKER_VERSION,
     rootPath,
-    distPath: "",
+    distPath: "dist",
     callerName: "rsbuild",
     action,
     config: configuration,

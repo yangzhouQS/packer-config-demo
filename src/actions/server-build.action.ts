@@ -110,15 +110,31 @@ export class ServerBuildAction extends AbstractAction {
   }
 
   createBuildCallback(context: InternalContext) {
-    const { isServerBuild } = formatEntry(context);
+    const { isServerBuild, nodeEntries } = formatEntry(context);
     if (!isServerBuild || context.action === "build") {
       return () => {};
     }
+
+    const entry = nodeEntries[0];
+    const outputPath = path.join(entry.output?.filePath || "", entry.output?.fileName || "");
+
+    /*
+    * {
+        input: 'src/controllers/main.ts',
+        title: 'server',
+        type: 'node',
+        entryKey: 'server',
+        sourceRoot: 'H:\\2026code\\demo\\doc-rspack\\packer-config-demo\\examples\\node-pm-inner-metadata-system\\src\\controllers',
+        entryFile: 'main.ts',
+        output: { fileName: 'main.js', filePath: 'dist/controllers' }
+      }
+    * */
     return createOnSuccessHook(
-      "controllers/main",
-      "src",
+      entry.input, // "controllers/main",
+      context.rootPath, // "src",
       true,
-      path.join(context.rootPath, "dist"),
+      outputPath,
+      // context.distPath || "dist", // "dist", // path.join(context.rootPath, "dist"),
       "node",
       {
         shell: false,

@@ -99,12 +99,16 @@ function spawnChildProcess(
 ): ChildProcess {
   logger.debug("-----------------childProcess------------------");
 
-  let outputFilePath = path.join(outDirName, sourceRoot, entryFile);
+  // let outputFilePath = path.join(outDirName, sourceRoot, entryFile);
+  let outputFilePath = path.join(sourceRoot, outDirName);
 
-  if (!fs.existsSync(`${outputFilePath}.js`)) {
+  if (!fs.existsSync(`${outputFilePath}`)) {
+    if (entryFile.endsWith(".ts")) {
+      entryFile.replace(".ts", ".js");
+    }
     outputFilePath = path.join(outDirName, entryFile);
   }
-
+  console.log("outputFilePath2222 = ", outputFilePath);
   let childProcessArgs: string[] = [];
   const argsStartIndex = process.argv.indexOf("--");
 
@@ -132,7 +136,7 @@ function spawnChildProcess(
   }
   processArgs.unshift("--enable-source-maps");
 
-  console.log("-----processArgs----", processArgs);
+  logger.debug("-----processArgs----", processArgs);
   // 创建一个子进程来运行编译后的文件
   return spawn(binaryToRun, processArgs, {
     stdio: "inherit",

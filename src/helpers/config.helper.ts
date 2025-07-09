@@ -66,6 +66,7 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
       type: entry.type,
       entryKey: key,
       sourceRoot: "",
+      entryFile: "",
     };
 
     if (!["browserVue3", "browserVue2", "node"].includes(entry.type)) {
@@ -94,7 +95,9 @@ export function formatEntry(context: InternalContext): GeneratePackResultType {
         logger.error(`[${PACKER_NAME}] entries.${key}.input 输入文件路径不存在: ${absPath}`);
         process.exit(1);
       }
-      entryConfig.sourceRoot = path.dirname(absPath);
+      const parseInfo = path.parse(absPath);
+      entryConfig.sourceRoot = parseInfo.dir;
+      entryConfig.entryFile = parseInfo.base;
 
       Object.assign(entryConfig, { output: entry.output });
       configResult.nodeEntries.push(entryConfig);
