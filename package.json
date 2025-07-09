@@ -61,7 +61,7 @@
     "node-polyfill-webpack-plugin": "4.1.0",
     "ts-node": "10.9.2",
     "ts-loader": "9.5.2",
-    "chokidar": "^4.0.3"
+    "chokidar": "4.0.3"
   },
   "devDependencies": {
     "tsx": "^4.20.3",

@@ -1,25 +1,41 @@
-import type { Compiler, MultiStats, RspackOptions, Stats } from "@rspack/core";
+import type { Compiler, RspackOptions } from "@rspack/core";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
+import { loadEnv } from "@rsbuild/core";
 import { rspack, ValidationError } from "@rspack/core";
 import get from "lodash.get";
 import { createAfterCallback } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
 import { BaseCompiler } from "./base.compiler.ts";
+import { onBeforeRestart, watchFilesForRestart } from "./restart.ts";
 
 export class RspackCompiler extends BaseCompiler {
-  public run(
+  public async run(
     {
+      configuration,
       tsConfigPath,
       rspackConfig,
       extras,
       context,
       onSuccess,
     }: RunRsbuildCompilerArgOptions,
-  ): Compiler | null {
+  ) {
+    console.log(rspackConfig);
     const cwd = context.rootPath || process.cwd();
+
+    const envs = loadEnv({
+      cwd,
+    });
+
+    // 清除环境变量
+    onBeforeRestart(envs.cleanup);
+    const entryFiles = ["H:\\2026code\\demo\\doc-rspack\\packer-config-demo\\examples\\node-pm-inner-metadata-system\\src\\controllers"];
+
+    // 监听配置文件和环境变量文件的修改
+    const watchFiles = [configuration.configFilePath, ...entryFiles, ...envs.filePaths];
+
     const configPath = path.join(cwd, tsConfigPath!);
     if (!fs.existsSync(configPath)) {
       throw new Error(
@@ -41,6 +57,7 @@ export class RspackCompiler extends BaseCompiler {
     const isWatchEnabled = !!(watchModeOption && watchModeOption.value);
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
+
     let compiler: Compiler | null = null;
 
     const afterCallback = createAfterCallback(
@@ -48,7 +65,39 @@ export class RspackCompiler extends BaseCompiler {
       isWatchEnabled,
     );
 
-    try {
+    const cliBuild = async () => {
+      try {
+        // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
+        compiler = rspack(rspackConfig!, undefined);
+
+        if (isWatchEnabled) {
+          // onBeforeRestart(compiler!.close);
+        }
+        compiler!.run(afterCallback);
+
+        if (isWatchEnabled) {
+          watchFilesForRestart(watchFiles, async () => {
+            await cliBuild();
+          });
+        }
+      }
+      catch (e) {
+        if (e instanceof ValidationError) {
+          logger.error(e.message);
+          process.exit(2);
+        }
+        else if (e instanceof Error) {
+          if (typeof afterCallback === "function") {
+            afterCallback(e);
+          }
+          logger.error(e);
+        }
+        throw e;
+      }
+    };
+    await cliBuild();
+
+    /* try {
       // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
       compiler = rspack(rspackConfig!, undefined);
     }
@@ -92,7 +141,7 @@ export class RspackCompiler extends BaseCompiler {
     }
     else if (compiler) {
       compiler.run(afterCallback);
-      /* compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
+      /!* compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);
         compiler.close((closeErr) => {
           if (closeErr) {
@@ -100,12 +149,10 @@ export class RspackCompiler extends BaseCompiler {
           }
           errorHandler(error, stats);
         });
-      }); */
+      }); *!/
     }
     else {
       logger.error(`Packer is building your sources..., 服务构建失败.....\n`);
-    }
-
-    return compiler;
+    } */
   }
 }

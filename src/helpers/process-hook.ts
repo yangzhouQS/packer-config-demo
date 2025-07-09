@@ -146,6 +146,23 @@ export function getEnvDir(cwd: string, envDir?: string): string {
   return cwd;
 }
 
+export function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number,
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  return (...args: Parameters<T>) => {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+}
+
 /**
  * Check if running in a TTY context
  */
