@@ -107,7 +107,7 @@ export class RspackCompiler extends BaseCompiler {
     };
     await cliBuild();
 
-    /* try {
+    try {
       // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
       compiler = rspack(rspackConfig!, undefined);
     }
@@ -129,7 +129,7 @@ export class RspackCompiler extends BaseCompiler {
       return null;
     }
 
-    const errorHandler = (error: Error | null, stats: Stats | MultiStats | undefined): void => {
+    /* const errorHandler = (error: Error | null, stats: Stats | MultiStats | undefined): void => {
       if (error) {
         logger.error(error);
         process.exit(2);

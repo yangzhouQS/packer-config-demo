@@ -1,5 +1,3 @@
-import { bootstrap } from "@cs/nest-cloud";
-import { AppModule } from "./app.module";
 
 const os = require('os');
 
@@ -41,17 +39,4 @@ function printMemoryInfo() {
 // printMemoryInfo();
 
 // 可选：设置定时器，每5秒更新一次内存信息
-// setInterval(printMemoryInfo, 5000);
-
-import fse from 'fs-extra'
-
-setInterval(()=>{
-  const time = new Date().toLocaleString()
-  fse.writeFileSync('./src/controllers/test-time.txt', `${time}`)
-},8000)
-
-bootstrap(AppModule, async (app, config) => {
-  // 服务启动后可以干点事情
-  const conf = config.get("name");
-  console.log(conf,'22222');
-});
+setInterval(printMemoryInfo, 5000);

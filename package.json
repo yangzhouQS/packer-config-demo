@@ -1,6 +1,6 @@
 {
   "name": "@cs/webpages-packer",
-  "version": "4.0.1-beta.1",
+  "version": "4.0.1-beta.2",
   "type": "module",
   "description": "脚手架项目测试",
   "exports": {

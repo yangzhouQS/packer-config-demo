@@ -69,7 +69,7 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
         paths: ["src/"],
       },
     },
-    watch: true,
+    // watch: true,
     watchOptions: {
       ignored: ["**/files/**/*.js", "**/.git", "**/node_modules", "**/log/", "**/dist/**", "**/lib/**"],
       aggregateTimeout: 200,
