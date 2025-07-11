@@ -96,7 +96,7 @@ export class ServerBuildAction extends AbstractAction {
       process.exit(1);
     }
     finally {
-      logger.info("--------------- rsbuild server --------------- end");
+      logger.info("--------------- build server --------------- end");
     }
   }
 
