@@ -195,6 +195,7 @@ export function createAfterCallback(
       assets: false,
     });
 
+    console.log(stats);
     if (!err && !stats!.hasErrors()) {
       if (!onSuccess) {
         console.log("assetsManager.closeWatchers()");

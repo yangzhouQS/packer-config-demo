@@ -11,7 +11,7 @@
     "ri": "rimraf node_modules",
     "start:debug": "nest start --debug --watch -b swc",
     "dev": "webpages-packer --env development --config packer-config.ts --watch true --include permission,product,innerUser,login",
-    "server:start": "webpages-server start",
+    "server:start": "webpages-server start -w",
     "build:server": "webpages-server build",
     "build": "nest build && webpages-packer --env production --config packer-config.ts",
     "start": "node ./dist/controllers/main.js",

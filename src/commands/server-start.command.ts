@@ -12,7 +12,7 @@ export class ServerStartCommand extends AbstractCommand {
       .command("", "Starts the packer server")
       .alias("dev")
       .option("-c, --config [path]", "Path to configuration file; e.g. ./packer-config.js")
-      .option("-w, --watch", "Run in watch mode (live-reload).", { default: true })
+      .option("-w, --watch", "Run in watch mode (live-reload).", { default: false })
       .option("-inc, --include [moduleName]", "local build modules to include; e.g. --include flowDesign,flowForm", { default: "" })
       .option(
         "--env <env>",

@@ -25,7 +25,6 @@ export class RspackCompiler extends BaseCompiler {
       onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ) {
-    console.log("000000000000000---RspackCompiler");
     logger.debug("create rspack compiler");
     const cwd = context.rootPath || process.cwd();
 
@@ -38,7 +37,7 @@ export class RspackCompiler extends BaseCompiler {
       process.exit(2);
     }
 
-    // rspackConfig.watch = false;
+    rspackConfig.watch = false;
     console.log("rspackConfig.watch = ", rspackConfig.watch);
     // 清除环境变量
     onBeforeRestart(envs.cleanup);
@@ -98,7 +97,7 @@ export class RspackCompiler extends BaseCompiler {
 
     const cliBuild = async () => {
       try {
-        compiler = await createRspackCompiler(rspackConfig, isWatchEnabled ? afterCallback : undefined);
+        compiler = await createRspackCompiler(rspackConfig);
 
         if (!compiler) {
           return null;
@@ -138,10 +137,15 @@ export class RspackCompiler extends BaseCompiler {
         } */
 
         if (isWatchEnabled) {
+          const watching = compiler.watch(rspackConfig.watchOptions || {}, afterCallback);
           await watchFilesForRestart(watchFiles, async () => {
+            watching.close();
             compiler!.close(() => {});
             await cliBuild();
           });
+        }
+        else {
+          compiler.run(afterCallback);
         }
       }
       catch (e) {

@@ -1,5 +1,6 @@
-import { bootstrap } from "@cs/nest-cloud";
-import { AppModule } from "./app.module";
+import {bootstrap} from "@cs/nest-cloud";
+import {AppModule} from "./app.module";
+import {items} from './demo-test'
 
 const os = require('os');
 
@@ -45,14 +46,21 @@ function printMemoryInfo() {
 
 import fse from 'fs-extra'
 
-setInterval(()=>{
+let count = 0
+setInterval(() => {
   const time = new Date().toLocaleString()
+  const writeContent = `export const items = {time:'${time}',count:${++count}}`
   fse.writeFileSync('./src/controllers/test-time.txt', `${time}`);
+  fse.writeFileSync('./src/controllers/demo-test.ts', writeContent);
   printMemoryInfo();
-},4000)
+  console.log('writeContent = ', writeContent);
+}, 4000)
+
 
 bootstrap(AppModule, async (app, config) => {
   // 服务启动后可以干点事情
   const conf = config.get("name");
-  console.log(conf,'123333333叔叔婶婶xassxaxsaxsa');
+
+  console.log(conf, '123333333叔叔婶婶xassxaxsaxsa');
+  console.log('test-items = ', items);
 });
