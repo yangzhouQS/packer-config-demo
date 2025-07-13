@@ -1,4 +1,3 @@
-import path from "node:path";
 import process from "node:process";
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
@@ -6,15 +5,12 @@ import { Input } from "../commands/command.input";
 import { RsbuildCompiler } from "../compiler/rsbuild.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
-import { PACKER_NAME, RSPACK_BUILD_ERROR } from "../constants.ts";
+import { PACKER_NAME } from "../constants.ts";
 import { createContext } from "../create-context.ts";
-import { formatEntry } from "../helpers/config.helper.ts";
 import { defaultPackerConfig } from "../helpers/default-packer-config";
-import { createOnSuccessHook } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { packerPluginDev } from "../plugins/dev.ts";
 import { packerPluginHtml } from "../plugins/html.ts";
-import { packerServicePlugin } from "../plugins/node-service.ts";
 import { packerPluginOutput } from "../plugins/output.ts";
 import { packerPluginResolve } from "../plugins/resolve.ts";
 import { packerPluginServer } from "../plugins/server.ts";
@@ -24,7 +20,6 @@ import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
 import { PackerConfigType } from "../types/config.ts";
 import { InternalContext } from "../types/context.ts";
 import { AbstractAction } from "./abstract.action";
-import {RspackCompiler} from "../compiler/rspack.compiler.ts";
 
 export interface RunActionBuildArgOptions {
   commandOptions: Input[];
@@ -75,17 +70,12 @@ export class BuildAction extends AbstractAction {
 
     const rsbuildConfig = await this.createRsbuildConfig(context, configuration);
 
-    const rspackConfig = await this.createRspackConfig(context);
-
     // 解析出站点和服务打包的配置
     logger.debug("--------runBuild-------------configuration");
-
-    const onSuccess = this.createBuildCallback(context);
 
     const buildParams = {
       configuration,
       rsbuildConfig,
-      rspackConfig,
       context,
       extras: {
         inputs: commandOptions,
@@ -93,7 +83,6 @@ export class BuildAction extends AbstractAction {
         debug: isDebugEnabled,
       },
       tsConfigPath: "tsconfig.json",
-      onSuccess,
     } as RunRsbuildCompilerArgOptions;
 
     /* 构建站点模块 */
@@ -109,24 +98,6 @@ export class BuildAction extends AbstractAction {
     }
     finally {
       logger.info("--------------- rsbuild website ------------------- end");
-    }
-
-    /* 构建服务模块 */
-    try {
-      const rsPackCompiler = new RspackCompiler();
-      await rsPackCompiler.run(buildParams);
-      console.log("-------构建服务模块-------222-");
-    }
-    catch (err) {
-      const isRspackError = err instanceof Error && err.message === RSPACK_BUILD_ERROR;
-      if (!isRspackError) {
-        logger.error(`[commands ${context.action}] Failed to build.`);
-      }
-      logger.error(err);
-      process.exit(1);
-    }
-    finally {
-      logger.info("--------------- rsbuild server --------------- end");
     }
   }
 
@@ -146,32 +117,6 @@ export class BuildAction extends AbstractAction {
       packerPluginResolve(context),
       packerPluginServer(context),
       packerPluginDev(context),
-    );
-  }
-
-  /**
-   * 创建服务打包配置
-   * @param {InternalContext} context
-   * @returns {Promise<void>}
-   */
-  async createRspackConfig(context: InternalContext) {
-    return packerServicePlugin(context);
-  }
-
-  createBuildCallback(context: InternalContext) {
-    const { isServerBuild } = formatEntry(context);
-    if (!isServerBuild || context.action === "build") {
-      return () => {};
-    }
-    return createOnSuccessHook(
-      "controllers/main",
-      "src",
-      true,
-      path.join(context.rootPath, "dist"),
-      "node",
-      {
-        shell: false,
-      },
     );
   }
 

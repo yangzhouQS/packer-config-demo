@@ -1,6 +1,6 @@
-import type { RspackOptions } from "@rspack/core";
 import path from "node:path";
 import process from "node:process";
+import { rspack, RspackOptions } from "@rspack/core";
 import fse from "fs-extra";
 import { merge as webpackMerge } from "webpack-merge";
 import { __dirname } from "../constants.ts";
@@ -46,6 +46,10 @@ export function packerServicePlugin(context: InternalContext): RspackOptions {
       extensions: [".ts", ".tsx", ".js"],
       // tsConfig: path.resolve(__dirname, "./tsconfig.json"),
     },
+    plugins: [
+      new rspack.DefinePlugin({}),
+      // new rspack.HotModuleReplacementPlugin(),
+    ],
     experiments: {
       // lazyCompilation: true,
       lazyCompilation: {

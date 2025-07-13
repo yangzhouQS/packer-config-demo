@@ -14,7 +14,6 @@ export class RsbuildCompiler extends BaseCompiler {
       rsbuildConfig,
       extras,
       context,
-      // onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ): Promise<RsbuildInstance | undefined> {
     const cwd = context.rootPath || process.cwd();

@@ -96,11 +96,11 @@ module.exports = {
       },
       input: "src/controllers/main.ts",
     },
-    /*login: {
+    login: {
       type: "browserVue3",
       title: "支撑系统登录页",
       input: "src/web-content/module/login/index.ts",
-    },*/
+    },
     /*
     index: {
       type: "browserVue3",

@@ -47,20 +47,20 @@ function printMemoryInfo() {
 import fse from 'fs-extra'
 
 let count = 0
-setInterval(() => {
+/*setInterval(() => {
   const time = new Date().toLocaleString()
   const writeContent = `export const items = {time:'${time}',count:${++count}}`
   fse.writeFileSync('./src/controllers/test-time.txt', `${time}`);
   fse.writeFileSync('./src/controllers/demo-test.ts', writeContent);
-  printMemoryInfo();
+  // printMemoryInfo();
   console.log('writeContent = ', writeContent);
-}, 4000)
+}, 4000)*/
 
 
 bootstrap(AppModule, async (app, config) => {
   // 服务启动后可以干点事情
   const conf = config.get("name");
 
-  console.log(conf, '123333333叔叔婶婶xassxaxsaxsa');
+  console.log(conf, '111111');
   console.log('test-items = ', items);
 });
