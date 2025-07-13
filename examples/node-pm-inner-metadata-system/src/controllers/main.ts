@@ -47,11 +47,12 @@ import fse from 'fs-extra'
 
 setInterval(()=>{
   const time = new Date().toLocaleString()
-  fse.writeFileSync('./src/controllers/test-time.txt', `${time}`)
-},8000)
+  fse.writeFileSync('./src/controllers/test-time.txt', `${time}`);
+  printMemoryInfo();
+},4000)
 
 bootstrap(AppModule, async (app, config) => {
   // 服务启动后可以干点事情
   const conf = config.get("name");
-  console.log(conf,'22222');
+  console.log(conf,'123333333叔叔婶婶xassxaxsaxsa');
 });

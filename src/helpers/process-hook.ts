@@ -108,7 +108,6 @@ function spawnChildProcess(
     }
     outputFilePath = path.join(outDirName, entryFile);
   }
-  console.log("outputFilePath2222 = ", outputFilePath);
   let childProcessArgs: string[] = [];
   const argsStartIndex = process.argv.indexOf("--");
 

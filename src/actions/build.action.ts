@@ -3,7 +3,6 @@ import process from "node:process";
 import { mergeRsbuildConfig, RsbuildConfig } from "@rsbuild/core";
 import deepmerge from "deepmerge";
 import { Input } from "../commands/command.input";
-import { RsbuildServerCompiler } from "../compiler/rsbuild-server.compiler.ts";
 import { RsbuildCompiler } from "../compiler/rsbuild.compiler.ts";
 import { ConfigurationLoader } from "../configuration/configuration.loader";
 import { FileSystemReader } from "../configuration/file-system.reader.ts";
@@ -25,6 +24,7 @@ import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
 import { PackerConfigType } from "../types/config.ts";
 import { InternalContext } from "../types/context.ts";
 import { AbstractAction } from "./abstract.action";
+import {RspackCompiler} from "../compiler/rspack.compiler.ts";
 
 export interface RunActionBuildArgOptions {
   commandOptions: Input[];
@@ -113,11 +113,9 @@ export class BuildAction extends AbstractAction {
 
     /* 构建服务模块 */
     try {
-      // const rsPackCompiler = new RspackCompiler();
-      // await rsPackCompiler.run(buildParams);
+      const rsPackCompiler = new RspackCompiler();
+      await rsPackCompiler.run(buildParams);
       console.log("-------构建服务模块-------222-");
-      const serverCompiler = new RsbuildServerCompiler();
-      await serverCompiler.run(buildParams);
     }
     catch (err) {
       const isRspackError = err instanceof Error && err.message === RSPACK_BUILD_ERROR;

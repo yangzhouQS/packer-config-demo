@@ -97,33 +97,14 @@ export class RspackCompiler extends BaseCompiler {
     }; */
 
     const cliBuild = async () => {
-      console.log("---------------cliBuild----------------------");
-
       try {
-        if (compiler) {
-          compiler.close(() => {
-            console.log("--close--");
-          });
-          compiler.compile(() => {
-            console.log("----");
-          });
-        }
-        compiler = createRspackCompiler(rspackConfig, isWatchEnabled ? afterCallback : undefined);
-        // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
-        // compiler = rspack(rspackConfig, callback);
+        compiler = await createRspackCompiler(rspackConfig, isWatchEnabled ? afterCallback : undefined);
 
         if (!compiler) {
           return null;
         }
-        onBeforeRestart(() => {
-          return new Promise((resolve) => {
-            compiler!.close(() => {
-              resolve(null);
-            });
-          });
-        });
 
-        if (isWatchEnabled) {
+        /* if (isWatchEnabled) {
           let needForceShutdown = false;
 
           EXIT_SIGNALS.forEach((signal) => {
@@ -154,10 +135,11 @@ export class RspackCompiler extends BaseCompiler {
             process.exit(0);
           });
           process.stdin.resume();
-        }
+        } */
 
         if (isWatchEnabled) {
-          watchFilesForRestart(watchFiles, async () => {
+          await watchFilesForRestart(watchFiles, async () => {
+            compiler!.close(() => {});
             await cliBuild();
           });
         }

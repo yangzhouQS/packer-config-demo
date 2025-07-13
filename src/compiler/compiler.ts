@@ -1,8 +1,9 @@
 import process from "node:process";
 import { Compiler, MultiStats, rspack, RspackOptions, Stats, ValidationError } from "@rspack/core";
 import { logger } from "../logger.ts";
+import { onBeforeRestart } from "./restart.ts";
 
-export function createRspackCompiler(options: RspackOptions, callback?: (e: Error | null, res?: Stats | MultiStats) => void) {
+export async function createRspackCompiler(options: RspackOptions, callback?: (e: Error | null, res?: Stats | MultiStats) => void) {
   const isWatch = Boolean(options?.watch);
   let compiler: Compiler | null;
   try {
@@ -27,5 +28,19 @@ export function createRspackCompiler(options: RspackOptions, callback?: (e: Erro
     }
     throw e;
   }
+
+  if (isWatch) {
+    onBeforeRestart(() => {
+      return new Promise((resolve) => {
+        compiler!.close(() => {
+          resolve(null);
+        });
+      });
+    });
+  }
+  else {
+    await compiler!.close(() => {});
+  }
+
   return compiler;
 }
