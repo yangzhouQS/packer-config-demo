@@ -1,17 +1,19 @@
-import type { Compiler, RspackOptions } from "@rspack/core";
 import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { loadEnv } from "@rsbuild/core";
-import { rspack, ValidationError } from "@rspack/core";
+
+import { Compiler, RspackOptions, ValidationError } from "@rspack/core";
 import get from "lodash.get";
 import { getEntryFileSourceRoot } from "../helpers/config.helper.ts";
 import { createAfterCallback } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { RunRsbuildCompilerArgOptions } from "../types/compile.ts";
 import { BaseCompiler } from "./base.compiler.ts";
+import { createRspackCompiler } from "./compiler.ts";
 import { onBeforeRestart, watchFilesForRestart } from "./restart.ts";
 
+const EXIT_SIGNALS = ["SIGINT", "SIGTERM"];
 export class RspackCompiler extends BaseCompiler {
   public async run(
     {
@@ -23,6 +25,8 @@ export class RspackCompiler extends BaseCompiler {
       onSuccess,
     }: RunRsbuildCompilerArgOptions,
   ) {
+    console.log("000000000000000---RspackCompiler");
+    logger.debug("create rspack compiler");
     const cwd = context.rootPath || process.cwd();
 
     const envs = loadEnv({
@@ -34,6 +38,8 @@ export class RspackCompiler extends BaseCompiler {
       process.exit(2);
     }
 
+    // rspackConfig.watch = false;
+    console.log("rspackConfig.watch = ", rspackConfig.watch);
     // 清除环境变量
     onBeforeRestart(envs.cleanup);
 
@@ -68,22 +74,87 @@ export class RspackCompiler extends BaseCompiler {
 
     const isBuildWatch = isWatchEnabled && context.action === "build";
 
-    let compiler: Compiler | null = null;
-
     const afterCallback = createAfterCallback(
       onSuccess,
       isWatchEnabled,
     );
 
+    let compiler: Compiler | null = null;
+
+    /* const callback = (error: Error | null, stats: Rspack.Stats | Rspack.MultiStats | undefined): void => {
+      if (error) {
+        logger.error(error);
+        process.exit(2);
+      }
+
+      if (stats && stats.hasErrors()) {
+        process.exitCode = 1;
+      }
+
+      if (!compiler || !stats) {
+        return undefined;
+      }
+    }; */
+
     const cliBuild = async () => {
+      console.log("---------------cliBuild----------------------");
+
       try {
+        if (compiler) {
+          compiler.close(() => {
+            console.log("--close--");
+          });
+          compiler.compile(() => {
+            console.log("----");
+          });
+        }
+        compiler = createRspackCompiler(rspackConfig, isWatchEnabled ? afterCallback : undefined);
         // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
-        compiler = rspack(rspackConfig, undefined);
+        // compiler = rspack(rspackConfig, callback);
+
+        if (!compiler) {
+          return null;
+        }
+        onBeforeRestart(() => {
+          return new Promise((resolve) => {
+            compiler!.close(() => {
+              resolve(null);
+            });
+          });
+        });
 
         if (isWatchEnabled) {
-          // onBeforeRestart(compiler!.close);
+          let needForceShutdown = false;
+
+          EXIT_SIGNALS.forEach((signal) => {
+            const listener = () => {
+              if (needForceShutdown) {
+                process.exit(0);
+              }
+
+              logger.info(
+                "Gracefully shutting down. To force exit, press ^C again. Please wait...",
+              );
+
+              needForceShutdown = true;
+
+              compiler!.close(() => {
+                process.exit(0);
+              });
+            };
+
+            process.on(signal, listener);
+          });
         }
-        compiler!.run(afterCallback);
+
+        // compiler!.run(afterCallback);
+
+        if (compiler.options.watchOptions?.stdin) {
+          process.stdin.on("end", () => {
+            process.exit(0);
+          });
+          process.stdin.resume();
+        }
 
         if (isWatchEnabled) {
           watchFilesForRestart(watchFiles, async () => {
@@ -107,42 +178,20 @@ export class RspackCompiler extends BaseCompiler {
     };
     await cliBuild();
 
-    try {
-      // compiler = rspack(rspackConfig!, isWatchEnabled ? afterCallback : undefined);
-      compiler = rspack(rspackConfig!, undefined);
-    }
-    catch (e) {
-      if (e instanceof ValidationError) {
-        logger.error(e.message);
-        process.exit(2);
-      }
-      else if (e instanceof Error) {
-        if (typeof afterCallback === "function") {
-          afterCallback(e);
-        }
-        logger.error(e);
-      }
-      throw e;
-    }
-
     if (!compiler) {
       return null;
     }
 
-    /* const errorHandler = (error: Error | null, stats: Stats | MultiStats | undefined): void => {
-      if (error) {
-        logger.error(error);
-        process.exit(2);
-      }
-      if (stats?.hasErrors()) {
-        process.exitCode = 1;
-      }
-      if (!compiler || !stats) {
-        return undefined;
-      }
-    };
+    if (isWatchEnabled) {
+      logger.greet("-----开启了文件监听模式---");
+      /* compiler.watch({}, (error) => {
+        if (error) {
+          logger.error(error);
+        }
+      }); */
+    }
 
-    if (compiler && isWatchEnabled) {
+    /* if (compiler && isWatchEnabled) {
       compiler.hooks.watchRun.tapAsync(`${PACKER_NAME} info`, (params, callback) => {
         logger.success(`\nSuccess Packer is building your sources...\n`);
         callback();
@@ -150,8 +199,8 @@ export class RspackCompiler extends BaseCompiler {
       compiler.watch(rspackConfig!.watchOptions! || {}, afterCallback);
     }
     else if (compiler) {
-      compiler.run(afterCallback);
-      /!* compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
+      // compiler.run(afterCallback);
+      compiler.run((error: Error | null, stats: Stats | MultiStats | undefined) => {
         logger.success(`Success Packer is building your sources..., 服务构建完成.....\n`);
         compiler.close((closeErr) => {
           if (closeErr) {
@@ -159,7 +208,7 @@ export class RspackCompiler extends BaseCompiler {
           }
           errorHandler(error, stats);
         });
-      }); *!/
+      });
     }
     else {
       logger.error(`Packer is building your sources..., 服务构建失败.....\n`);

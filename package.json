@@ -35,7 +35,7 @@
     "publish:beta": "npm publish --tag=beta",
     "publish:latest": "npm publish",
     "pnpm:unpublish": "npm unpublish @cs/webpages-packer@4.0.1-beta.2",
-    "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.0-beta.1 --force",
+    "pnpm:remove:pkg": "npm unpublish @cs/webpages-packer@4.0.1-beta.2 --force",
     "build:dev": "cross-env NODE_ENV=development node ./dist/index.cjs build",
     "prebundle": "prebundle",
     "node-dev:dev": "ts-node ./bin/webpages-packer.cjs --inc demoTest,flowForm,flowDesign",

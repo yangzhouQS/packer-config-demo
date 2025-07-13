@@ -15,7 +15,7 @@ import { createOnSuccessHook } from "../helpers/process-hook.ts";
 import { logger } from "../logger.ts";
 import { packerPluginDev } from "../plugins/dev.ts";
 import { packerPluginHtml } from "../plugins/html.ts";
-import { packerServicePlugin, rsbuildServerPlugin } from "../plugins/node-service.ts";
+import { packerServicePlugin } from "../plugins/node-service.ts";
 import { packerPluginOutput } from "../plugins/output.ts";
 import { packerPluginResolve } from "../plugins/resolve.ts";
 import { packerPluginServer } from "../plugins/server.ts";
@@ -77,8 +77,6 @@ export class BuildAction extends AbstractAction {
 
     const rspackConfig = await this.createRspackConfig(context);
 
-    const rsbuildServerConfig = await this.createRsbuildServerConfig(context);
-
     // 解析出站点和服务打包的配置
     logger.debug("--------runBuild-------------configuration");
 
@@ -88,7 +86,6 @@ export class BuildAction extends AbstractAction {
       configuration,
       rsbuildConfig,
       rspackConfig,
-      rsbuildServerConfig,
       context,
       extras: {
         inputs: commandOptions,
@@ -161,10 +158,6 @@ export class BuildAction extends AbstractAction {
    */
   async createRspackConfig(context: InternalContext) {
     return packerServicePlugin(context);
-  }
-
-  async createRsbuildServerConfig(context: InternalContext) {
-    return await rsbuildServerPlugin(context);
   }
 
   createBuildCallback(context: InternalContext) {
