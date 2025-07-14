@@ -5,7 +5,6 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { dayjs } from "element-plus";
 import { map } from "lodash";
 import { In } from "typeorm";
-import { formatDate } from "../../../web-content/utils/utils";
 import { idGen, transField } from "../common/utils";
 import { SysRolePermissionEntity } from "./entities/sys-role-permission.entity";
 import { SysRoleEntity } from "./entities/sys-role.entity";
@@ -86,7 +85,6 @@ export class SysRoleExtendService {
       .update()
       .set({
         isRemoved: true,
-        modifierAt: formatDate(),
         modifierId: userId,
         modifierName: userName,
       })
